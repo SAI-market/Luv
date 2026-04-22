@@ -26,8 +26,8 @@
         <a href="#fixture" class="nav-link">Fixture</a>
         <a href="#fotos" class="nav-link">Fotos</a>
         <a href="#noticias" class="nav-link">Noticias</a>
-        <button id="authorize_button" class="btn-neon" style="display:none; margin-left:15px;">Cargar Tabla Sheets</button>
-        <button id="signout_button" class="btn-neon" style="display:none; margin-left:5px;">Cerrar Sheets</button>
+        <button id="authorize_button" class="btn-neon" style="display:none; margin-left:15px; cursor:pointer;">Conectar Google</button>
+        <button id="signout_button" class="btn-neon" style="display:none; margin-left:5px; cursor:pointer;">Cerrar Sesión</button>
       </nav>
     </div>
   </header>
@@ -46,18 +46,11 @@
       </h1>
       <p class="hero-subtitle">-------------------</p>
       <div class="hero-actions">
-        <a href="#posiciones" class="btn btn--primary">
-          <span class="btn-icon">📊</span> Ver Posiciones
-        </a>
-        <a href="#fixture" class="btn btn--secondary">
-          <span class="btn-icon">📅</span> Ver Fixture
-        </a>
-        <a href="#fotos" class="btn btn--ghost">
-          <span class="btn-icon">📸</span> Ver Fotos
-        </a>
+        <a href="#posiciones" class="btn btn--primary"><span class="btn-icon">📊</span> Ver Posiciones</a>
+        <a href="#fixture" class="btn btn--secondary"><span class="btn-icon">📅</span> Ver Fixture</a>
+        <a href="#fotos" class="btn btn--ghost"><span class="btn-icon">📸</span> Ver Fotos</a>
       </div>
-      <div class="hero-stats" id="heroStats">
-        </div>
+      <div class="hero-stats" id="heroStats"></div>
     </div>
     <div class="hero-scroll-hint">↓</div>
   </section>
@@ -77,26 +70,14 @@
 
       <div class="tab-panels">
         <div class="tab-panel active" id="panel-masculino">
-          <div class="table-wrap">
-            <table class="standings-table" id="table-masculino"></table>
-          </div>
+          <div class="table-wrap"><table class="standings-table" id="table-masculino"></table></div>
         </div>
         <div class="tab-panel" id="panel-femenino">
-          <div class="table-wrap">
-            <table class="standings-table" id="table-femenino"></table>
-          </div>
+          <div class="table-wrap"><table class="standings-table" id="table-femenino"></table></div>
         </div>
         <div class="tab-panel" id="panel-maxi">
-          <div class="table-wrap">
-            <table class="standings-table" id="table-maxi"></table>
-          </div>
+          <div class="table-wrap"><table class="standings-table" id="table-maxi"></table></div>
         </div>
-      </div>
-
-      <div class="table-legend">
-        <span class="legend-item legend-item--gold">🥇 1er lugar</span>
-        <span class="legend-item legend-item--mid">Clasificados</span>
-        <span class="legend-item legend-item--last">⚠ Último lugar</span>
       </div>
     </div>
   </section>
@@ -107,8 +88,7 @@
         <h2 class="section-title">Fixture</h2>
         <p class="section-sub">Calendario de partidos del mes</p>
       </div>
-      <div class="fixture-card" id="fixtureCard">
-        </div>
+      <div class="fixture-card" id="fixtureCard"></div>
     </div>
   </section>
 
@@ -118,8 +98,7 @@
         <h2 class="section-title">Fotos</h2>
         <p class="section-sub">Galerías por fecha</p>
       </div>
-      <div class="gallery-grid" id="galleryGrid">
-        </div>
+      <div class="gallery-grid" id="galleryGrid"></div>
     </div>
   </section>
 
@@ -129,27 +108,19 @@
         <h2 class="section-title">Noticias</h2>
         <p class="section-sub">Últimas novedades de la liga</p>
       </div>
-      <div class="news-grid" id="newsGrid">
-        </div>
+      <div class="news-grid" id="newsGrid"></div>
     </div>
   </section>
 
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-logo">🏐 Liga UNLu Voley</div>
-      <a class="footer-ig" href="https://www.instagram.com/ligaunluvoley/" target="_blank" rel="noopener noreferrer">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-        </svg>
-        @ligaunluvoley
-      </a>
       <p class="footer-copy">© 2026 Liga UNLu Voley — Universidad Nacional de Luján</p>
     </div>
   </footer>
 
   <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
   <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
-  
   <script src="app.js"></script>
   <script src="auth.js"></script>
     

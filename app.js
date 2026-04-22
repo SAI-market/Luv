@@ -1,66 +1,18 @@
+/* =============================================
+   LIGA UNLU VOLEY — app.js
+   All content is controlled from this file.
+   Edit the DATA SECTION below to update the site.
+============================================= */
+
 /* =========================================
-   ✏️  DATA SECTION — AHORA SE LLENA POR GOOGLE SHEETS
+   ✏️  DATA SECTION — AHORA SE LLENA DINÁMICAMENTE CON SHEETS
    ========================================= */
 
-
-const tablas = {
-  masculino: [] 
+let tablas = {
+  masculino: [],
+  femenino: [],
+  maxi: [],
 };
-
-// Funciones para calcular y ordenar
-function calcPuntos(equipo) {
-    return equipo.pg * 3;
-}
-
-function sortTabla(equipos) {
-    return [...equipos].sort((a, b) => {
-        const ptsA = calcPuntos(a);
-        const ptsB = calcPuntos(b);
-        if (ptsB !== ptsA) return ptsB - ptsA;
-
-        const difA = a.sf - a.sc;
-        const difB = b.sf - b.sc;
-        if (difB !== difA) return difB - difA;
-
-        return b.sf - a.sf;
-    });
-}
-
-// Nueva función de renderizado que usa el "truco" de ordenar solo
-function renderTable(containerId, equipos) {
-    const tableBody = document.querySelector(`#${containerId} tbody`);
-    if (!tableBody) return;
-
-    const equiposOrdenados = sortTabla(equipos);
-    tableBody.innerHTML = '';
-
-    equiposOrdenados.forEach((equipo, index) => {
-        const puntos = calcPuntos(equipo);
-        const difSets = equipo.sf - equipo.sc;
-        
-        const rowClass = index === 0 ? 'puntero-row' : '';
-
-        const row = `
-            <tr class="${rowClass}">
-                <td>${index + 1}</td>
-                <td class="equipo-cell">${equipo.equipo}</td>
-                <td>${equipo.pj}</td>
-                <td>${equipo.pg}</td>
-                <td>${equipo.pp}</td>
-                <td>${equipo.sf}</td>
-                <td>${equipo.sc}</td>
-                <td>${difSets}</td>
-                <td class="pts-cell">${puntos}</td>
-            </tr>
-        `;
-        tableBody.insertAdjacentHTML('beforeend', row);
-    });
-}
-
-// Función que dispara auth.js
-function updateAllTables() {
-    renderTable('tabla-masculino', tablas.masculino);
-}
 
 /* ── FIXTURE PDF ──────────────────────────
    Change the path/URL when you upload a new PDF.
@@ -68,7 +20,7 @@ function updateAllTables() {
    or a full URL.
 ------------------------------------------------ */
 const fixturePDF  = "pdfs/fixture-abril.pdf";
-const fixtureNombre = "Fixture — Abril 2025";
+const fixtureNombre = "Fixture — Abril 2026";
 
 /* ── FOTOS ────────────────────────────────
    Add a new object per date played.
@@ -119,6 +71,12 @@ function sortTabla(equipos) {
 function renderTable(tableId, equipos) {
   const table = document.getElementById(tableId);
   if (!table) return;
+
+  // Validación para cuando la tabla está vacía (esperando a Sheets)
+  if (!equipos || equipos.length === 0) {
+    table.innerHTML = '<tr><td colspan="9" style="text-align:center; padding: 20px;">Esperando datos...</td></tr>';
+    return;
+  }
 
   const sorted = sortTabla(equipos);
   const last   = sorted.length - 1;
