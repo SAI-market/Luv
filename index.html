@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liga UNLu Voley</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- HEADER / NAV -->
+  <header id="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🏐</span>
+        <span class="logo-text">Liga <strong>UNLu</strong> Voley</span>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav">
+        <a href="#inicio" class="nav-link">Inicio</a>
+        <a href="#posiciones" class="nav-link">Posiciones</a>
+        <a href="#fixture" class="nav-link">Fixture</a>
+        <a href="#fotos" class="nav-link">Fotos</a>
+        <a href="#noticias" class="nav-link">Noticias</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO / INICIO -->
+  <section id="inicio" class="hero">
+    <div class="hero-bg">
+      <div class="hero-glow hero-glow--green"></div>
+      <div class="hero-glow hero-glow--blue"></div>
+      <div class="hero-grid"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">⚡ Temporada 2025</div>
+      <h1 class="hero-title">
+        <span class="hero-title--top">Liga UNLu</span>
+        <span class="hero-title--bottom">Voley</span>
+      </h1>
+      <p class="hero-subtitle">-------------------</p>
+      <div class="hero-actions">
+        <a href="#posiciones" class="btn btn--primary">
+          <span class="btn-icon">📊</span> Ver Posiciones
+        </a>
+        <a href="#fixture" class="btn btn--secondary">
+          <span class="btn-icon">📅</span> Ver Fixture
+        </a>
+        <a href="#fotos" class="btn btn--ghost">
+          <span class="btn-icon">📸</span> Ver Fotos
+        </a>
+      </div>
+      <div class="hero-stats" id="heroStats">
+        <!-- filled by JS -->
+      </div>
+    </div>
+    <div class="hero-scroll-hint">↓</div>
+  </section>
+
+  <!-- POSICIONES -->
+  <section id="posiciones" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Posiciones</h2>
+        <p class="section-sub">Clasificación actualizada por categoría</p>
+      </div>
+
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-tab="masculino">Masculino Libre</button>
+        <button class="tab" data-tab="femenino">Femenino Libre</button>
+        <button class="tab" data-tab="maxi">Femenino Maxi</button>
+      </div>
+
+      <div class="tab-panels">
+        <div class="tab-panel active" id="panel-masculino">
+          <div class="table-wrap">
+            <table class="standings-table" id="table-masculino"></table>
+          </div>
+        </div>
+        <div class="tab-panel" id="panel-femenino">
+          <div class="table-wrap">
+            <table class="standings-table" id="table-femenino"></table>
+          </div>
+        </div>
+        <div class="tab-panel" id="panel-maxi">
+          <div class="table-wrap">
+            <table class="standings-table" id="table-maxi"></table>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-legend">
+        <span class="legend-item legend-item--gold">🥇 1er lugar</span>
+        <span class="legend-item legend-item--mid">Clasificados</span>
+        <span class="legend-item legend-item--last">⚠ Último lugar</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FIXTURE -->
+  <section id="fixture" class="section section--alt">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Fixture</h2>
+        <p class="section-sub">Calendario de partidos del mes</p>
+      </div>
+      <div class="fixture-card" id="fixtureCard">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FOTOS -->
+  <section id="fotos" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Fotos</h2>
+        <p class="section-sub">Galerías por fecha</p>
+      </div>
+      <div class="gallery-grid" id="galleryGrid">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTICIAS -->
+  <section id="noticias" class="section section--alt">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Noticias</h2>
+        <p class="section-sub">Últimas novedades de la liga</p>
+      </div>
+      <div class="news-grid" id="newsGrid">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">🏐 Liga UNLu Voley</div>
+      <a
+        class="footer-ig"
+        href="https://www.instagram.com/ligaunluvoley/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+        @ligaunluvoley
+      </a>
+      <p class="footer-copy">© 2026 Liga UNLu Voley — Universidad Nacional de Luján</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+
+
+
+
+
+
+  <p>Sheets API Quickstart</p>
+
+    <!--Add buttons to initiate auth sequence and sign out-->
+    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
+
+    <pre id="content" style="white-space: pre-wrap;"></pre>
+
+    <script type="text/javascript">
+      /* exported gapiLoaded */
+      /* exported gisLoaded */
+      /* exported handleAuthClick */
+      /* exported handleSignoutClick */
+
+      // TODO(developer): Set to client ID and API key from the Developer Console
+      const CLIENT_ID = '917148795274-h6n16iinto598nmnjertujnq8f35i7ik.apps.googleusercontent.com';
+      const API_KEY = 'AIzaSyB9QHJyonGVv3RHlGElNoghFTeGMmnWsx8';
+
+      // Discovery doc URL for APIs used by the quickstart
+      const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+
+      // Authorization scopes required by the API; multiple scopes can be
+      // included, separated by spaces.
+      const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+
+      let tokenClient;
+      let gapiInited = false;
+      let gisInited = false;
+
+      document.getElementById('authorize_button').style.visibility = 'hidden';
+      document.getElementById('signout_button').style.visibility = 'hidden';
+
+      /**
+       * Callback after api.js is loaded.
+       */
+      function gapiLoaded() {
+        gapi.load('client', initializeGapiClient);
+      }
+
+      /**
+       * Callback after the API client is loaded. Loads the
+       * discovery doc to initialize the API.
+       */
+      async function initializeGapiClient() {
+        await gapi.client.init({
+          apiKey: API_KEY,
+          discoveryDocs: [DISCOVERY_DOC],
+        });
+        gapiInited = true;
+        maybeEnableButtons();
+      }
+
+      /**
+       * Callback after Google Identity Services are loaded.
+       */
+      function gisLoaded() {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          callback: '', // defined later
+        });
+        gisInited = true;
+        maybeEnableButtons();
+      }
+
+      /**
+       * Enables user interaction after all libraries are loaded.
+       */
+      function maybeEnableButtons() {
+        if (gapiInited && gisInited) {
+          document.getElementById('authorize_button').style.visibility = 'visible';
+        }
+      }
+
+      /**
+       *  Sign in the user upon button click.
+       */
+      function handleAuthClick() {
+        tokenClient.callback = async (resp) => {
+          if (resp.error !== undefined) {
+            throw (resp);
+          }
+          document.getElementById('signout_button').style.visibility = 'visible';
+          document.getElementById('authorize_button').innerText = 'Refresh';
+          await listMajors();
+        };
+
+        if (gapi.client.getToken() === null) {
+          // Prompt the user to select a Google Account and ask for consent to share their data
+          // when establishing a new session.
+          tokenClient.requestAccessToken({prompt: 'consent'});
+        } else {
+          // Skip display of account chooser and consent dialog for an existing session.
+          tokenClient.requestAccessToken({prompt: ''});
+        }
+      }
+
+      /**
+       *  Sign out the user upon button click.
+       */
+      function handleSignoutClick() {
+        const token = gapi.client.getToken();
+        if (token !== null) {
+          google.accounts.oauth2.revoke(token.access_token);
+          gapi.client.setToken('');
+          document.getElementById('content').innerText = '';
+          document.getElementById('authorize_button').innerText = 'Authorize';
+          document.getElementById('signout_button').style.visibility = 'hidden';
+        }
+      }
+
+      /**
+       * Print the names and majors of students in a sample spreadsheet:
+       * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+       */
+      async function listMajors() {
+        let response;
+        try {
+          // Fetch first 10 files
+          response = await gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
+            range: 'Class Data!A2:E',
+          });
+        } catch (err) {
+          document.getElementById('content').innerText = err.message;
+          return;
+        }
+        const range = response.result;
+        if (!range || !range.values || range.values.length == 0) {
+          document.getElementById('content').innerText = 'No values found.';
+          return;
+        }
+        // Flatten to string to display
+        const output = range.values.reduce(
+            (str, row) => `${str}${row[0]}, ${row[4]}\n`,
+            'Name, Major:\n');
+        document.getElementById('content').innerText = output;
+      }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+</body>
+</html>
