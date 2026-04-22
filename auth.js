@@ -1,128 +1,91 @@
-// TODO(developer): Set to client ID and API key from the Developer Console
-const CLIENT_ID = '917148795274-h6n16iinto598nmnjertujnq8f35i7ik.apps.googleusercontent.com';
-const API_KEY = 'AIzaSyB9QHJyonGVv3RHlGElNoghFTeGMmnWsx8';
+const CLIENT_ID = 'TU_CLIENT_ID'; 
+const API_KEY = 'TU_API_KEY';
+const SPREADSHEET_ID = '1YDedfy3yJeTg80rFRAJJma2SxWkJDYxxqvG0-ktdKHo';
+const RANGE = 'Masculino!A2:G'; 
 
-// Discovery doc URL for APIs used by the quickstart
 const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-
-// Authorization scopes required by the API; multiple scopes can be
-// included, separated by spaces.
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly';
 
 let tokenClient;
 let gapiInited = false;
 let gisInited = false;
 
+document.getElementById('gapi').addEventListener('load', gapiLoaded);
+document.getElementById('gis').addEventListener('load', gisLoaded);
 
-document.getElementById("gapi").addEventListener("load", gapiLoaded);
-document.getElementById("gis").addEventListener("load", gisLoaded);
-
-document.getElementById('authorize_button').style.visibility = 'hidden';
-document.getElementById('signout_button').style.visibility = 'hidden';
-
-/**
- * Callback after api.js is loaded.
- */
 function gapiLoaded() {
-    gapi.load('client', initializeGapiClient);
-}
-
-/**
- * Callback after the API client is loaded. Loads the
- * discovery doc to initialize the API.
- */
-async function initializeGapiClient() {
-    await gapi.client.init({
-        apiKey: API_KEY,
-        discoveryDocs: [DISCOVERY_DOC],
+    gapi.load('client', async () => {
+        await gapi.client.init({
+            apiKey: API_KEY,
+            discoveryDocs: [DISCOVERY_DOC],
+        });
+        gapiInited = true;
+        checkAuthReady();
     });
-    gapiInited = true;
-    maybeEnableButtons();
 }
 
-/**
- * Callback after Google Identity Services are loaded.
- */
 function gisLoaded() {
     tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
         scope: SCOPES,
-        callback: '', // defined later
+        callback: '', 
     });
     gisInited = true;
-    maybeEnableButtons();
+    checkAuthReady();
 }
 
-/**
- * Enables user interaction after all libraries are loaded.
- */
-function maybeEnableButtons() {
+function checkAuthReady() {
     if (gapiInited && gisInited) {
-        document.getElementById('authorize_button').style.visibility = 'visible';
+        document.getElementById('authorize_button').style.display = 'block';
     }
 }
 
-/**
- *  Sign in the user upon button click.
- */
-function handleAuthClick() {
+document.getElementById('authorize_button').onclick = () => {
     tokenClient.callback = async (resp) => {
-        if (resp.error !== undefined) {
-            throw (resp);
-        }
-        document.getElementById('signout_button').style.visibility = 'visible';
-        document.getElementById('authorize_button').innerText = 'Refresh';
-        await listMajors();
+        if (resp.error !== undefined) throw (resp);
+        document.getElementById('authorize_button').innerText = 'Actualizar Tabla';
+        document.getElementById('signout_button').style.display = 'block';
+        await fetchSheetData();
     };
 
     if (gapi.client.getToken() === null) {
-        // Prompt the user to select a Google Account and ask for consent to share their data
-        // when establishing a new session.
-        tokenClient.requestAccessToken({ prompt: 'consent' });
+        tokenClient.requestAccessToken({prompt: 'consent'});
     } else {
-        // Skip display of account chooser and consent dialog for an existing session.
-        tokenClient.requestAccessToken({ prompt: '' });
+        tokenClient.requestAccessToken({prompt: ''});
+    }
+};
+
+async function fetchSheetData() {
+    try {
+        const response = await gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_ID,
+            range: RANGE,
+        });
+        const values = response.result.values;
+        if (!values) return;
+
+        // Actualizamos la variable global de app.js
+        tablas.masculino = values.map(fila => ({
+            equipo: fila[1], 
+            pj: parseInt(fila[2]) || 0,
+            pg: parseInt(fila[3]) || 0,
+            pp: parseInt(fila[4]) || 0,
+            sf: parseInt(fila[5]) || 0,
+            sc: parseInt(fila[6]) || 0
+        }));
+
+        updateAllTables(); 
+    } catch (err) {
+        console.error("Error trayendo datos:", err);
     }
 }
 
-/**
- *  Sign out the user upon button click.
- */
-function handleSignoutClick() {
+document.getElementById('signout_button').onclick = () => {
     const token = gapi.client.getToken();
     if (token !== null) {
         google.accounts.oauth2.revoke(token.access_token);
         gapi.client.setToken('');
-        document.getElementById('content').innerText = '';
-        document.getElementById('authorize_button').innerText = 'Authorize';
-        document.getElementById('signout_button').style.visibility = 'hidden';
+        document.getElementById('authorize_button').innerText = 'Cargar Tabla de Sheets';
+        document.getElementById('signout_button').style.display = 'none';
     }
-}
-
-/**
- * Print the names and majors of students in a sample spreadsheet:
- * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
- */
-async function listMajors() {
-    let response;
-    try {
-        // Fetch first 10 files
-        response = await gapi.client.sheets.spreadsheets.values.get({
-            spreadsheetId: '1YDedfy3yJeTg80rFRAJJma2SxWkJDYxxqvG0-ktdKHo',
-            range: 'Masculino!B:I',
-        });
-    } catch (err) {
-        document.getElementById('content').innerText = err.message;
-        return;
-    }
-    const range = response.result;
-    if (!range || !range.values || range.values.length == 0) {
-        document.getElementById('content').innerText = 'No values found.';
-        return;
-    }
-    // Flatten to string to display
-    const output = range.values.reduce(
-        (str, row) => `${str}${row[0]}, ${row[4]}\n`,
-        'Name, Major:\n');
-    document.getElementById('content').innerText = output;
-}
+};

@@ -27,6 +27,8 @@
         <a href="#fixture" class="nav-link">Fixture</a>
         <a href="#fotos" class="nav-link">Fotos</a>
         <a href="#noticias" class="nav-link">Noticias</a>
+        <button id="authorize_button" class="btn-neon" style="display:none; margin-left:15px;">Cargar Tabla Sheets</button>
+        <button id="signout_button" class="btn-neon" style="display:none; margin-left:5px;">Cerrar Sheets</button>
       </nav>
     </div>
   </header>
@@ -37,7 +39,7 @@
       <div class="hero-glow hero-glow--green"></div>
       <div class="hero-glow hero-glow--blue"></div>
       <div class="hero-grid"></div>
-    </div>
+    </div><nav id="nav"></nav>
     <div class="hero-content">
       <div class="hero-badge">⚡ Temporada 2026 Apertura</div>
       <h1 class="hero-title">
@@ -161,25 +163,14 @@
     </div>
   </footer>
 
+ <footer class="footer">
+    </footer>
+
+  <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
+  <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
+
   <script src="app.js"></script>
-
-
-
-
-
-
-  <p>Sheets API Quickstart</p>
-
-    <!--Add buttons to initiate auth sequence and sign out-->
-    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
-    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
-
-  
-   
-    <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
-    <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
-    <script async defer src="auth.js"></script>
-
-
+  <script src="auth.js"></script>
+    
 </body>
 </html>

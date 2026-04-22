@@ -1,46 +1,66 @@
-/* =============================================
-   LIGA UNLU VOLEY — app.js
-   All content is controlled from this file.
-   Edit the DATA SECTION below to update the site.
-============================================= */
-
 /* =========================================
-   ✏️  DATA SECTION — EDIT THIS TO UPDATE
-   =========================================
-   Instructions:
-   - Add/remove teams in each array.
-   - Each team needs: equipo, pj, pg, pp, sf, sc
-   - Points (puntos) are CALCULATED automatically: pg*3
-   - Sort order is AUTOMATIC: pts → (sf-sc) → sf
+   ✏️  DATA SECTION — AHORA SE LLENA POR GOOGLE SHEETS
    ========================================= */
 
+
 const tablas = {
-  masculino: [
-    { equipo: "Los Pumas",          pj: 8, pg: 6, pp: 2, sf: 19, sc: 10 },
-    { equipo: "Atlético Luján",     pj: 8, pg: 5, pp: 3, sf: 17, sc: 12 },
-    { equipo: "Club UNLu A",        pj: 8, pg: 5, pp: 3, sf: 16, sc: 13 },
-    { equipo: "Los Cóndores",       pj: 8, pg: 4, pp: 4, sf: 14, sc: 14 },
-    { equipo: "Leones del Sur",     pj: 8, pg: 3, pp: 5, sf: 11, sc: 16 },
-    { equipo: "Tigres FC",          pj: 8, pg: 2, pp: 6, sf: 9,  sc: 18 },
-    { equipo: "Rayo Azul",          pj: 8, pg: 1, pp: 7, sf: 6,  sc: 21 },
-  ],
-  femenino: [
-    { equipo: "Las Águilas",        pj: 7, pg: 7, pp: 0, sf: 21, sc: 5  },
-    { equipo: "Club UNLu B",        pj: 7, pg: 5, pp: 2, sf: 16, sc: 9  },
-    { equipo: "Rayitas",            pj: 7, pg: 4, pp: 3, sf: 13, sc: 12 },
-    { equipo: "Voleibol Femenino",  pj: 7, pg: 4, pp: 3, sf: 12, sc: 13 },
-    { equipo: "Las Guerreras",      pj: 7, pg: 3, pp: 4, sf: 10, sc: 14 },
-    { equipo: "Estrellas del Sur",  pj: 7, pg: 1, pp: 6, sf: 5,  sc: 18 },
-    { equipo: "Orquídeas",          pj: 7, pg: 0, pp: 7, sf: 2,  sc: 21 },
-  ],
-  maxi: [
-    { equipo: "Veteranas FC",       pj: 6, pg: 5, pp: 1, sf: 16, sc: 7  },
-    { equipo: "Las Maxi Queens",    pj: 6, pg: 4, pp: 2, sf: 13, sc: 9  },
-    { equipo: "Club UNLu Maxi",     pj: 6, pg: 4, pp: 2, sf: 12, sc: 10 },
-    { equipo: "Las Matriarcas",     pj: 6, pg: 2, pp: 4, sf: 8,  sc: 13 },
-    { equipo: "Phoenix Maxi",       pj: 6, pg: 1, pp: 5, sf: 5,  sc: 16 },
-  ],
+  masculino: [] 
 };
+
+// Funciones para calcular y ordenar
+function calcPuntos(equipo) {
+    return equipo.pg * 3;
+}
+
+function sortTabla(equipos) {
+    return [...equipos].sort((a, b) => {
+        const ptsA = calcPuntos(a);
+        const ptsB = calcPuntos(b);
+        if (ptsB !== ptsA) return ptsB - ptsA;
+
+        const difA = a.sf - a.sc;
+        const difB = b.sf - b.sc;
+        if (difB !== difA) return difB - difA;
+
+        return b.sf - a.sf;
+    });
+}
+
+// Nueva función de renderizado que usa el "truco" de ordenar solo
+function renderTable(containerId, equipos) {
+    const tableBody = document.querySelector(`#${containerId} tbody`);
+    if (!tableBody) return;
+
+    const equiposOrdenados = sortTabla(equipos);
+    tableBody.innerHTML = '';
+
+    equiposOrdenados.forEach((equipo, index) => {
+        const puntos = calcPuntos(equipo);
+        const difSets = equipo.sf - equipo.sc;
+        
+        const rowClass = index === 0 ? 'puntero-row' : '';
+
+        const row = `
+            <tr class="${rowClass}">
+                <td>${index + 1}</td>
+                <td class="equipo-cell">${equipo.equipo}</td>
+                <td>${equipo.pj}</td>
+                <td>${equipo.pg}</td>
+                <td>${equipo.pp}</td>
+                <td>${equipo.sf}</td>
+                <td>${equipo.sc}</td>
+                <td>${difSets}</td>
+                <td class="pts-cell">${puntos}</td>
+            </tr>
+        `;
+        tableBody.insertAdjacentHTML('beforeend', row);
+    });
+}
+
+// Función que dispara auth.js
+function updateAllTables() {
+    renderTable('tabla-masculino', tablas.masculino);
+}
 
 /* ── FIXTURE PDF ──────────────────────────
    Change the path/URL when you upload a new PDF.
