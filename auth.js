@@ -13,14 +13,23 @@ const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/val
 function mapRows(rows) {
     if (!rows) return [];
     const dataRows = rows.slice(1); // Saltamos los encabezados
-    return dataRows.map(fila => ({
-        equipo: fila[0] || "---", 
-        pj: parseInt(fila[1]) || 0,
-        pg: parseInt(fila[2]) || 0,
-        pp: parseInt(fila[3]) || 0,
-        sf: parseInt(fila[4]) || 0,
-        sc: parseInt(fila[5]) || 0
-    }));
+    
+    return dataRows
+        // ESTA ES LA MAGIA: Filtramos la fila para asegurarnos de que sea válida
+        .filter(fila => {
+            // Verificamos que la celda tenga algo, que no sean solo espacios en blanco, 
+            // y por las dudas descartamos si alguien escribió literalmente "Equipo" por error.
+            const nombre = fila[0] ? fila[0].trim() : "";
+            return nombre !== "" && nombre.toLowerCase() !== "equipo" && nombre !== "---";
+        })
+        .map(fila => ({
+            equipo: fila[0], 
+            pj: parseInt(fila[1]) || 0,
+            pg: parseInt(fila[2]) || 0,
+            pp: parseInt(fila[3]) || 0,
+            sf: parseInt(fila[4]) || 0,
+            sc: parseInt(fila[5]) || 0
+        }));
 }
 
 // Función que trae los datos silenciosamente
@@ -55,4 +64,4 @@ async function fetchPublicSheetData() {
 // Magia: Apenas el navegador termina de leer el HTML, ejecuta la búsqueda solo.
 document.addEventListener('DOMContentLoaded', () => {
     fetchPublicSheetData();
-});
+}); 

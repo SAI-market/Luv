@@ -14,11 +14,7 @@ let tablas = {
   maxi: [],
 };
 
-/* ── FIXTURE PDF ──────────────────────────
-   Change the path/URL when you upload a new PDF.
-   Can be a local path like "pdfs/fixture-mayo.pdf"
-   or a full URL.
------------------------------------------------- */
+
 const fixturePDF  = "pdfs/fixture-abril.pdf";
 const fixtureNombre = "Fixture — Abril 2026";
 
@@ -48,8 +44,9 @@ const noticias = [
    ========================================= */
 
 /* ── SORT LOGIC ─────────────────────────── */
-function calcPuntos(equipo) {
-  return equipo.pg * 3;
+function calcPuntos(equipo) 
+{
+  return (equipo.pg * 2) + (equipo.pp * 1);
 }
 
 function sortTabla(equipos) {
