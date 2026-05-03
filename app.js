@@ -35,7 +35,7 @@ const noticias = [
   "📋 Las inscripciones para la próxima temporada ya están abiertas. Comunicate por Instagram.",
   "📅 El fixture de Mayo ya está disponible en la sección Fixture.",
   "⚠️ Recordatorio: los partidos empiezan puntualmente. Se recomienda llegar 20 min antes.",
-  "🎉 Bienvenidos a la temporada 2025 de la Liga UNLu Voley. ¡Mucha suerte a todos los equipos!",
+  "🎉 Bienvenidos a la temporada 2026 de la Liga UNLu Voley. ¡Mucha suerte a todos los equipos!",
 ];
 
 /* =========================================
