@@ -65,71 +65,95 @@ function sortTabla(equipos) {
 }
 
 /* ── RENDER TABLE ───────────────────────── */
-function renderTable(tableId, equipos) {
-  const table = document.getElementById(tableId);
-  if (!table) return;
 
-  // Validación para cuando la tabla está vacía (esperando a Sheets)
+function renderTable(containerId, equipos) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
   if (!equipos || equipos.length === 0) {
-    table.innerHTML = '<tr><td colspan="9" style="text-align:center; padding: 20px;">Esperando datos...</td></tr>';
+    container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Esperando datos...</div>';
     return;
   }
 
-  const sorted = sortTabla(equipos);
-  const last   = sorted.length - 1;
-
-  let html = `
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Equipo</th>
-        <th title="Partidos Jugados">PJ</th>
-        <th title="Partidos Ganados">PG</th>
-        <th title="Partidos Perdidos">PP</th>
-        <th title="Sets a Favor">SF</th>
-        <th title="Sets en Contra">SC</th>
-        <th title="Diferencia de Sets">+/-</th>
-        <th title="Puntos">PTS</th>
-      </tr>
-    </thead>
-    <tbody>
-  `;
-
-  sorted.forEach((eq, i) => {
-    const pos     = i + 1;
-    const diff    = eq.sf - eq.sc;
-    const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
-    const rowClass = i === 0 ? 'row-first' : (i === last ? 'row-last' : '');
-
-    let posClass = 'pos-badge--n';
-    if (pos === 1) posClass = 'pos-badge--1';
-    else if (pos === 2) posClass = 'pos-badge--2';
-    else if (pos === 3) posClass = 'pos-badge--3';
-
-    html += `
-      <tr class="${rowClass}">
-        <td><span class="pos-badge ${posClass}">${pos}</span></td>
-        <td>${eq.equipo}</td>
-        <td>${eq.pj}</td>
-        <td>${eq.pg}</td>
-        <td>${eq.pp}</td>
-        <td>${eq.sf}</td>
-        <td>${eq.sc}</td>
-        <td style="color:${diff >= 0 ? 'var(--green-light)' : '#f87171'}">${diffStr}</td>
-        <td><span class="pts-highlight">${eq.puntos}</span></td>
-      </tr>
-    `;
+  // 1. Agrupar los equipos según la zona que escribiste en el Excel
+  const zonas = {};
+  equipos.forEach(eq => {
+    const nombreZona = eq.zona || "GENERAL";
+    if (!zonas[nombreZona]) zonas[nombreZona] = [];
+    zonas[nombreZona].push(eq);
   });
 
-  html += '</tbody>';
-  table.innerHTML = html;
+  let htmlFinal = '';
+
+  // 2. Por cada zona que exista, creamos una tabla independiente
+  Object.keys(zonas).sort().forEach(nombreZona => {
+    const sorted = sortTabla(zonas[nombreZona]);
+    const last   = sorted.length - 1;
+
+    // Si hay zonas definidas (no es la "GENERAL"), le ponemos un título
+    if (nombreZona !== "GENERAL") {
+      htmlFinal += `<h3 style="color: var(--green); margin: 1.5rem 0 0.5rem; font-family: var(--font-display); font-size: 1.3rem; letter-spacing: 0.05em;">• ${nombreZona}</h3>`;
+    }
+
+    let tableHtml = `
+      <div class="table-wrap" style="margin-bottom: 2rem;">
+        <table class="standings-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Equipo</th>
+              <th title="Partidos Jugados">PJ</th>
+              <th title="Partidos Ganados">PG</th>
+              <th title="Partidos Perdidos">PP</th>
+              <th title="Sets a Favor">SF</th>
+              <th title="Sets en Contra">SC</th>
+              <th title="Diferencia de Sets">+/-</th>
+              <th title="Puntos">PTS</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    sorted.forEach((eq, i) => {
+      const pos     = i + 1;
+      const diff    = eq.sf - eq.sc;
+      const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
+      const rowClass = i === 0 ? 'row-first' : (i === last ? 'row-last' : '');
+
+      let posClass = 'pos-badge--n';
+      if (pos === 1) posClass = 'pos-badge--1';
+      else if (pos === 2) posClass = 'pos-badge--2';
+      else if (pos === 3) posClass = 'pos-badge--3';
+
+      tableHtml += `
+        <tr class="${rowClass}">
+          <td><span class="pos-badge ${posClass}">${pos}</span></td>
+          <td>${eq.equipo}</td>
+          <td>${eq.pj}</td>
+          <td>${eq.pg}</td>
+          <td>${eq.pp}</td>
+          <td>${eq.sf}</td>
+          <td>${eq.sc}</td>
+          <td style="color:${diff >= 0 ? 'var(--green-light)' : '#f87171'}">${diffStr}</td>
+          <td><span class="pts-highlight">${eq.puntos}</span></td>
+        </tr>
+      `;
+    });
+
+    tableHtml += '</tbody></table></div>';
+    htmlFinal += tableHtml;
+  });
+
+  // 3. Inyectamos todas las tablas generadas en el panel correspondiente
+  container.innerHTML = htmlFinal;
 }
 
 /* ── RENDER ALL TABLES ──────────────────── */
 function renderAllTables() {
-  renderTable('table-masculino', tablas.masculino);
-  renderTable('table-femenino',  tablas.femenino);
-  renderTable('table-maxi',      tablas.maxi);
+  // Ahora apuntamos a los IDs de los contenedores que dejamos vacíos en el HTML
+  renderTable('panel-masculino', tablas.masculino);
+  renderTable('panel-femenino',  tablas.femenino);
+  renderTable('panel-maxi',      tablas.maxi);
 }
 
 /* ── HERO STATS ─────────────────────────── */
@@ -192,7 +216,7 @@ function renderFixture() {
   `;
 }
 
-/* ── GALLERY ────────────────────────────── */
+
 function renderGallery() {
   const grid = document.getElementById('galleryGrid');
   if (!grid) return;
@@ -212,7 +236,7 @@ function renderGallery() {
   `).join('');
 }
 
-/* ── NEWS ───────────────────────────────── */
+
 function renderNews() {
   const grid = document.getElementById('newsGrid');
   if (!grid) return;
@@ -225,7 +249,7 @@ function renderNews() {
   `).join('');
 }
 
-/* ── HEADER SCROLL EFFECT ───────────────── */
+
 function initHeader() {
   const header = document.getElementById('header');
   window.addEventListener('scroll', () => {
@@ -233,7 +257,7 @@ function initHeader() {
   }, { passive: true });
 }
 
-/* ── HAMBURGER ──────────────────────────── */
+
 function initHamburger() {
   const btn = document.getElementById('hamburger');
   const nav = document.getElementById('nav');
@@ -243,7 +267,7 @@ function initHamburger() {
     nav.classList.toggle('open');
   });
 
-  // Close on nav link click
+ 
   document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
       btn.classList.remove('open');
@@ -252,7 +276,7 @@ function initHamburger() {
   });
 }
 
-/* ── ACTIVE NAV LINK ────────────────────── */
+
 function initActiveNav() {
   const sections = document.querySelectorAll('section[id]');
   const links    = document.querySelectorAll('.nav-link');
