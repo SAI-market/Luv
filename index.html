@@ -7,15 +7,14 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;1,400&family=Teko:wght@500;700&display=swap" rel="stylesheet" />
 </head>
 <body>
 
   <header id="header">
     <div class="header-inner">
       <div class="logo">
-        <span class="logo-icon">🏐</span>
-        <span class="logo-text">Liga <strong>UNLu</strong> Voley</span>
+        <span class="logo-text">LUV<strong>.</strong></span>
       </div>
       <button class="hamburger" id="hamburger" aria-label="Menú">
         <span></span><span></span><span></span>
@@ -42,7 +41,7 @@
         <span class="hero-title--top">Liga UNLu</span>
         <span class="hero-title--bottom">Voley</span>
       </h1>
-      <p class="hero-subtitle">-------------------</p>
+      <p class="hero-subtitle">------------------------------------------------</p>
       <div class="hero-actions">
         <a href="#posiciones" class="btn btn--primary"><span class="btn-icon">📊</span> Ver Posiciones</a>
         <a href="#fixture" class="btn btn--secondary"><span class="btn-icon">📅</span> Ver Fixture</a>
@@ -67,7 +66,6 @@
       </div>
 
       <div class="tab-panels">
-        <!-- Borramos las etiquetas <table> fijas, ahora el panel es un contenedor libre -->
         <div class="tab-panel active" id="panel-masculino"></div>
         <div class="tab-panel" id="panel-femenino"></div>
         <div class="tab-panel" id="panel-maxi"></div>
@@ -76,12 +74,39 @@
   </section>
 
   <section id="fixture" class="section section--alt">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">Fixture</h2>
-        <p class="section-sub">Calendario de partidos del mes</p>
+    <div class="container" style="max-width: 600px;">
+      
+      <div class="calendario-header">
+        <h2 class="titulo-calendario">CALENDARIO</h2>
+        <span class="anio-calendario">2026</span>
       </div>
-      <div class="fixture-card" id="fixtureCard"></div>
+
+      <div class="fase-container">
+        <h3 class="fase-titulo">APERTURA:</h3>
+        <div class="fechas-grid">
+          <div class="fecha-card">
+            <span class="fecha-numero">FECHA 1</span>
+            <span class="fecha-dia">18 DE MARZO</span>
+            <div class="icono-pelota" style="position: absolute; top: 8px; right: 8px; font-size: 0.8rem; color: var(--blue-light);">🏐</div>
+          </div>
+          <div class="fecha-card">
+            <span class="fecha-numero">FECHA 2</span>
+            <span class="fecha-dia">16 DE MAYO</span>
+            <div class="icono-pelota" style="position: absolute; top: 8px; right: 8px; font-size: 0.8rem; color: var(--blue-light);">🏐</div>
+          </div>
+          <div class="fecha-card">
+            <span class="fecha-numero">FECHA 3</span>
+            <span class="fecha-dia">20 DE JUNIO</span>
+            <div class="icono-pelota" style="position: absolute; top: 8px; right: 8px; font-size: 0.8rem; color: var(--blue-light);">🏐</div>
+          </div>
+          <div class="fecha-card">
+            <span class="fecha-numero">FECHA 4</span>
+            <span class="fecha-dia">4 DE JULIO</span>
+            <div class="icono-pelota" style="position: absolute; top: 8px; right: 8px; font-size: 0.8rem; color: var(--blue-light);">🏐</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -107,11 +132,10 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div class="footer-logo">🏐 Liga UNLu Voley</div>
+      <div class="footer-logo">🏐 LUV.</div>
       <p class="footer-copy">© 2026 Liga UNLu Voley — Universidad Nacional de Luján</p>
     </div>
   </footer>
-
 
   <script src="app.js"></script>
   <script src="auth.js"></script>

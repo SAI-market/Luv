@@ -1,40 +1,53 @@
 /* =============================================
-   LIGA UNLU VOLEY — styles.css
-   Design: Esports-inspired, dark, electric
+   LUV. — styles.css
+   Design: Nueva Identidad (Verde Lima & Violeta Vibrante)
 ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;1,400&family=Teko:wght@500;700&display=swap');
 
 /* ── RESET & TOKENS ─────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --green:       #22c55e;
-  --green-dark:  #14532d;
-  --green-glow:  #16a34a;
-  --green-light: #4ade80;
-  --blue:        #1e3a8a;
-  --blue-mid:    #2563eb;
-  --blue-light:  #3b82f6;
-  --yellow:      #fde047;
-  --yellow-dark: #ca8a04;
+  /* ── NUEVA IDENTIDAD LUV. ── */
+  --green:       #bdf25e;  /* Verde Lima */
+  --green-dark:  #8cb846;
+  --green-glow:  #bdf25e;
+  --green-light: #d6f796;
+  
+  --blue:        #8531e5;  /* Violeta Vibrante */
+  --blue-mid:    #6b26b8;
+  --blue-light:  #9f56f5;
+  
+  --yellow:      #bdf25e;  /* Unificamos el amarillo al verde lima para mantener la paleta */
+  --yellow-dark: #8cb846;
   --white:       #ffffff;
-  --card-bg:     rgba(15, 23, 42, 0.75);
-  --card-border: rgba(34, 197, 94, 0.18);
+  
+  /* Fondos oscuros con tono azulado/violeta */
+  --bg-dark:     #080718;
+  --card-bg:     rgba(10, 9, 29, 0.75);
+  --card-border: rgba(189, 242, 94, 0.2); /* Borde lima sutil */
+  
   --text-main:   #f1f5f9;
-  --text-muted:  #94a3b8;
-  --gold-row:    rgba(253, 224, 71, 0.12);
-  --last-row:    rgba(239, 68, 68, 0.10);
+  --text-muted:  #a0a0a0;
+  
+  --gold-row:    rgba(189, 242, 94, 0.12);
+  --last-row:    rgba(133, 49, 229, 0.15); /* Violeta para el fondo de descenso/últimos */
+  
   --radius:      12px;
   --radius-sm:   8px;
   --transition:  0.25s ease;
-  --font-display: 'Barlow Condensed', sans-serif;
-  --font-body:    'Inter', sans-serif;
+  
+  /* Nuevas tipografías */
+  --font-display: 'Teko', sans-serif;
+  --font-body:    'Montserrat', sans-serif;
 }
 
 html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-body);
-  background: #030d1a;
+  background: var(--bg-dark);
   color: var(--text-main);
   line-height: 1.6;
   overflow-x: hidden;
@@ -42,15 +55,15 @@ body {
 
 /* ── SCROLLBAR ──────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0f172a; }
-::-webkit-scrollbar-thumb { background: var(--green-dark); border-radius: 3px; }
+::-webkit-scrollbar-track { background: #080718; }
+::-webkit-scrollbar-thumb { background: var(--blue-mid); border-radius: 3px; }
 
 /* ── HEADER ─────────────────────────────── */
 #header {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: rgba(3, 13, 26, 0.88);
+  background: rgba(8, 7, 24, 0.88);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--card-border);
@@ -58,7 +71,7 @@ body {
 }
 
 #header.scrolled {
-  box-shadow: 0 4px 32px rgba(34, 197, 94, 0.12);
+  box-shadow: 0 4px 32px rgba(189, 242, 94, 0.12);
 }
 
 .header-inner {
@@ -83,11 +96,13 @@ body {
 
 .logo-text {
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 2px;
   color: var(--white);
   text-transform: uppercase;
+  line-height: 1;
+  margin-top: 5px;
 }
 
 .logo-text strong { color: var(--green); }
@@ -100,8 +115,8 @@ nav {
 
 .nav-link {
   font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -114,7 +129,7 @@ nav {
 .nav-link:hover,
 .nav-link.active {
   color: var(--green);
-  background: rgba(34, 197, 94, 0.08);
+  background: rgba(189, 242, 94, 0.08);
 }
 
 /* HAMBURGER */
@@ -163,12 +178,12 @@ nav {
   position: absolute;
   border-radius: 50%;
   filter: blur(120px);
-  opacity: 0.35;
+  opacity: 0.25;
 }
 
 .hero-glow--green {
   width: 600px; height: 600px;
-  background: var(--green-dark);
+  background: var(--green);
   top: -10%; left: -15%;
   animation: floatGlow 8s ease-in-out infinite alternate;
 }
@@ -189,8 +204,8 @@ nav {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(34,197,94,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,197,94,0.06) 1px, transparent 1px);
+    linear-gradient(rgba(189, 242, 94, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(189, 242, 94, 0.04) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
 }
@@ -211,13 +226,13 @@ nav {
 .hero-badge {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--yellow);
-  background: rgba(253, 224, 71, 0.1);
-  border: 1px solid rgba(253, 224, 71, 0.3);
+  color: var(--blue-light);
+  background: rgba(133, 49, 229, 0.15);
+  border: 1px solid rgba(133, 49, 229, 0.4);
   padding: 0.35rem 1rem;
   border-radius: 100px;
   margin-bottom: 1.5rem;
@@ -233,29 +248,30 @@ nav {
 .hero-title--top {
   display: block;
   font-size: clamp(3.5rem, 12vw, 8rem);
-  font-weight: 900;
+  font-weight: 700;
   color: var(--white);
-  letter-spacing: -0.01em;
+  letter-spacing: 2px;
 }
 
 .hero-title--bottom {
   display: block;
   font-size: clamp(4.5rem, 16vw, 11rem);
-  font-weight: 900;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: 2px;
   background: linear-gradient(135deg, var(--green) 30%, var(--green-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 40px rgba(34,197,94,0.4));
+  filter: drop-shadow(0 0 30px rgba(189, 242, 94, 0.3));
 }
 
 .hero-subtitle {
   font-size: clamp(1rem, 2.5vw, 1.25rem);
   color: var(--text-muted);
   margin-bottom: 2.5rem;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.02em;
+  font-style: italic;
 }
 
 .hero-actions {
@@ -285,8 +301,8 @@ nav {
 
 .hero-stat__num {
   font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 900;
+  font-size: 2.5rem;
+  font-weight: 700;
   color: var(--green);
   line-height: 1;
 }
@@ -297,6 +313,7 @@ nav {
   text-transform: uppercase;
   color: var(--text-muted);
   margin-top: 0.2rem;
+  font-weight: 600;
 }
 
 .hero-scroll-hint {
@@ -320,12 +337,12 @@ nav {
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   text-decoration: none;
-  padding: 0.75rem 1.75rem;
+  padding: 0.6rem 1.75rem;
   border-radius: var(--radius-sm);
   border: 2px solid transparent;
   cursor: pointer;
@@ -338,14 +355,14 @@ nav {
 
 .btn--primary {
   background: var(--green);
-  color: #0a1a0a;
+  color: var(--bg-dark);
   border-color: var(--green);
-  box-shadow: 0 0 24px rgba(34,197,94,0.3);
+  box-shadow: 0 0 24px rgba(189, 242, 94, 0.2);
 }
 .btn--primary:hover {
   background: var(--green-light);
   border-color: var(--green-light);
-  box-shadow: 0 0 40px rgba(34,197,94,0.5);
+  box-shadow: 0 0 40px rgba(189, 242, 94, 0.4);
   transform: translateY(-2px);
 }
 
@@ -355,8 +372,8 @@ nav {
   border-color: var(--green);
 }
 .btn--secondary:hover {
-  background: rgba(34,197,94,0.1);
-  box-shadow: 0 0 20px rgba(34,197,94,0.2);
+  background: rgba(189, 242, 94, 0.1);
+  box-shadow: 0 0 20px rgba(189, 242, 94, 0.2);
   transform: translateY(-2px);
 }
 
@@ -375,13 +392,13 @@ nav {
   background: linear-gradient(135deg, var(--blue-mid), var(--blue-light));
   color: var(--white);
   border: none;
-  box-shadow: 0 0 24px rgba(37,99,235,0.35);
-  font-size: 1.05rem;
-  padding: 0.9rem 2.2rem;
+  box-shadow: 0 0 24px rgba(133, 49, 229, 0.35);
+  font-size: 1.3rem;
+  padding: 0.8rem 2.2rem;
 }
 .btn--pdf:hover {
   filter: brightness(1.15);
-  box-shadow: 0 0 40px rgba(37,99,235,0.5);
+  box-shadow: 0 0 40px rgba(133, 49, 229, 0.5);
   transform: translateY(-2px);
 }
 
@@ -391,7 +408,7 @@ nav {
 }
 
 .section--alt {
-  background: rgba(10, 20, 40, 0.6);
+  background: rgba(133, 49, 229, 0.05);
   border-top: 1px solid var(--card-border);
   border-bottom: 1px solid var(--card-border);
 }
@@ -408,13 +425,14 @@ nav {
 
 .section-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  font-weight: 900;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--white);
   position: relative;
   display: inline-block;
+  line-height: 1;
 }
 
 .section-title::after {
@@ -443,14 +461,14 @@ nav {
 
 .tab {
   font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   background: var(--card-bg);
   color: var(--text-muted);
   border: 1px solid var(--card-border);
-  padding: 0.6rem 1.4rem;
+  padding: 0.4rem 1.4rem;
   border-radius: 100px;
   cursor: pointer;
   transition: all var(--transition);
@@ -460,14 +478,14 @@ nav {
 .tab:hover {
   color: var(--green);
   border-color: var(--green);
-  background: rgba(34,197,94,0.06);
+  background: rgba(189, 242, 94, 0.06);
 }
 
 .tab.active {
   background: var(--green);
-  color: #0a1a0a;
+  color: var(--bg-dark);
   border-color: var(--green);
-  box-shadow: 0 0 16px rgba(34,197,94,0.35);
+  box-shadow: 0 0 16px rgba(189, 242, 94, 0.35);
 }
 
 .tab-panel { display: none; }
@@ -491,14 +509,14 @@ nav {
 }
 
 .standings-table thead tr {
-  background: rgba(34, 197, 94, 0.08);
+  background: rgba(189, 242, 94, 0.08);
   border-bottom: 2px solid var(--green-dark);
 }
 
 .standings-table th {
   font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--green);
@@ -522,7 +540,7 @@ nav {
 .standings-table tbody tr:last-child td { border-bottom: none; }
 
 .standings-table tbody tr:hover td {
-  background: rgba(34, 197, 94, 0.04);
+  background: rgba(189, 242, 94, 0.04);
 }
 
 /* Row highlights */
@@ -530,7 +548,7 @@ nav {
   background: var(--gold-row);
 }
 .standings-table tbody tr.row-first td:nth-child(2) {
-  color: var(--yellow);
+  color: var(--green);
 }
 
 .standings-table tbody tr.row-last td {
@@ -545,44 +563,24 @@ nav {
   width: 28px; height: 28px;
   border-radius: 50%;
   font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 0.85rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding-top: 3px;
 }
 
-.pos-badge--1 { background: var(--yellow); color: #1a1100; }
+.pos-badge--1 { background: var(--green); color: var(--bg-dark); }
 .pos-badge--2 { background: rgba(192,192,192,0.2); color: #c0c0c0; border: 1px solid #c0c0c0; }
 .pos-badge--3 { background: rgba(205,127,50,0.2); color: #cd7f32; border: 1px solid #cd7f32; }
 .pos-badge--n { background: rgba(255,255,255,0.06); color: var(--text-muted); }
 
 .pts-highlight {
   font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 900;
+  font-size: 1.3rem;
+  font-weight: 700;
   color: var(--green-light);
 }
 
-.table-legend {
-  display: flex;
-  gap: 1.25rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 1rem;
-}
-
-.legend-item {
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.8rem;
-  border-radius: 100px;
-  font-weight: 600;
-}
-
-.legend-item--gold { background: var(--gold-row); color: var(--yellow); border: 1px solid rgba(253,224,71,0.3); }
-.legend-item--mid  { background: rgba(255,255,255,0.04); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); }
-.legend-item--last { background: var(--last-row); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-
-/* ── FIXTURE ────────────────────────────── */
+/* ── FIXTURE (ANTIGUO - SI SE NECESITA) ─── */
 .fixture-card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -602,8 +600,8 @@ nav {
 
 .fixture-card__title {
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 900;
+  font-size: 2rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--white);
@@ -639,13 +637,13 @@ nav {
 .gallery-card:hover {
   border-color: var(--green);
   transform: translateY(-3px);
-  box-shadow: 0 8px 32px rgba(34,197,94,0.15);
+  box-shadow: 0 8px 32px rgba(189, 242, 94, 0.15);
 }
 
 .gallery-card__label {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 500;
+  font-size: 1.3rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--white);
@@ -656,15 +654,15 @@ nav {
   align-items: center;
   gap: 0.4rem;
   font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--green);
   text-decoration: none;
-  background: rgba(34,197,94,0.1);
-  border: 1px solid rgba(34,197,94,0.3);
-  padding: 0.45rem 0.9rem;
+  background: rgba(189, 242, 94, 0.1);
+  border: 1px solid rgba(189, 242, 94, 0.3);
+  padding: 0.3rem 0.9rem;
   border-radius: 100px;
   white-space: nowrap;
   transition: all var(--transition);
@@ -672,7 +670,7 @@ nav {
 
 .gallery-card__link:hover {
   background: var(--green);
-  color: #0a1a0a;
+  color: var(--bg-dark);
 }
 
 /* ── NEWS ───────────────────────────────── */
@@ -695,18 +693,18 @@ nav {
 }
 
 .news-card:hover {
-  border-color: rgba(34,197,94,0.4);
+  border-color: rgba(189, 242, 94, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(34,197,94,0.08);
+  box-shadow: 0 8px 24px rgba(189, 242, 94, 0.08);
 }
 
 .news-card__num {
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: var(--green-dark);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--blue-light);
   line-height: 1;
-  opacity: 0.6;
+  opacity: 0.8;
   min-width: 2rem;
 }
 
@@ -720,7 +718,7 @@ nav {
 .footer {
   padding: 2rem 1.25rem;
   border-top: 1px solid var(--card-border);
-  background: rgba(3, 13, 26, 0.95);
+  background: rgba(8, 7, 24, 0.95);
 }
 
 .footer-inner {
@@ -735,7 +733,7 @@ nav {
 
 .footer-logo {
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -770,18 +768,15 @@ nav {
   nav {
     position: fixed;
     top: 64px; left: 0; right: 0;
-    background: rgba(3, 13, 26, 0.97);
+    background: rgba(8, 7, 24, 0.97);
     backdrop-filter: blur(16px);
     flex-direction: column;
     gap: 0;
     border-bottom: 1px solid var(--card-border);
-    
-   
     transform: translateY(-150%); 
     opacity: 0;                  
     visibility: hidden;           
     pointer-events: none;        
-    
     transition: all 0.4s ease;
     z-index: 98; 
   }
@@ -797,14 +792,14 @@ nav {
     padding: 1rem 1.5rem;
     border-radius: 0;
     border-bottom: 1px solid var(--card-border);
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
 
   .hero-stats { gap: 1rem; }
-  .hero-stat__num { font-size: 1.5rem; }
+  .hero-stat__num { font-size: 2rem; }
 
   .tabs { gap: 0.4rem; }
-  .tab { font-size: 0.82rem; padding: 0.55rem 1rem; }
+  .tab { font-size: 1.1rem; padding: 0.35rem 1rem; }
 
   .fixture-card { padding: 1.75rem 1.25rem; }
 
@@ -813,7 +808,7 @@ nav {
 
 @media (max-width: 480px) {
   .hero-actions { gap: 0.6rem; }
-  .btn { font-size: 0.9rem; padding: 0.7rem 1.25rem; }
+  .btn { font-size: 1.1rem; padding: 0.5rem 1.25rem; }
 }
 
 /* ── SCROLL REVEAL ANIMATIONS ───────────── */
@@ -832,10 +827,9 @@ nav {
 .reveal-delay-2 { transition-delay: 0.2s; }
 .reveal-delay-3 { transition-delay: 0.3s; }
 
-
 /* ── ESTILOS AGREGADOS PARA LA TABLA DE SHEETS ── */
 .puntero-row {
-    background: rgba(34, 197, 94, 0.15) !important;
+    background: rgba(189, 242, 94, 0.15) !important;
     border-left: 4px solid var(--green);
 }
 
@@ -848,8 +842,9 @@ nav {
     background: transparent;
     border: 1px solid var(--green);
     color: var(--text-main);
-    padding: 0.5rem 1rem;
-    font-family: 'Barlow Condensed', sans-serif;
+    padding: 0.4rem 1rem;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
     cursor: pointer;
     transition: 0.3s ease;
     border-radius: 4px;
@@ -857,6 +852,97 @@ nav {
 
 .btn-neon:hover {
     background: var(--green);
-    color: var(--white);
+    color: var(--bg-dark);
     box-shadow: 0 0 10px var(--green-glow);
+}
+
+/* ── CALENDARIO (NUEVA IDENTIDAD ASIMÉTRICA) ── */
+.calendario-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  margin-bottom: 3rem;
+  position: relative;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.titulo-calendario {
+  background-color: var(--green);
+  color: var(--bg-dark);
+  font-family: var(--font-display);
+  font-size: 4.5rem;
+  padding: 0 15px;
+  margin: 0;
+  line-height: 1.1;
+  transform: rotate(-3deg);
+  text-transform: uppercase;
+}
+
+.anio-calendario {
+  background-color: var(--white);
+  color: var(--blue);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  padding: 2px 8px;
+  position: absolute;
+  right: -15px;
+  bottom: -15px;
+  line-height: 1;
+}
+
+.fase-titulo {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  letter-spacing: 2px;
+  font-style: italic;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.fechas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.fecha-card {
+  border: 1px solid var(--green);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: transform var(--transition);
+  position: relative;
+}
+
+.fecha-card:hover {
+  transform: translateY(-5px);
+  background-color: rgba(189, 242, 94, 0.05);
+}
+
+.fecha-numero {
+  color: var(--blue-light);
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.fecha-dia {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .fechas-grid { grid-template-columns: 1fr; }
 }

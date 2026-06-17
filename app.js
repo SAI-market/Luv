@@ -22,9 +22,9 @@ const fixtureNombre = "Fixture — Abril 2026";
    Add a new object per date played.
 ------------------------------------------------ */
 const galerias = [
-  { fecha: "Fecha 1 — 12/04/2025", link: "https://drive.google.com/drive/folders/EXAMPLE1" },
-  { fecha: "Fecha 2 — 19/04/2025", link: "https://drive.google.com/drive/folders/EXAMPLE2" },
-  { fecha: "Fecha 3 — 26/04/2025", link: "https://drive.google.com/drive/folders/EXAMPLE3" },
+  { fecha: "Fecha 1 — 18/03/2026", link: "#" },
+  { fecha: "Fecha 2 — 16/05/2026", link: "#" },
+  { fecha: "Fecha 3 — 20/06/2026", link: "#" },
 ];
 
 /* ── NOTICIAS ─────────────────────────────
@@ -33,7 +33,7 @@ const galerias = [
 const noticias = [
   "🏆 Se jugó la Fecha 3 con gran nivel de juego — ¡Los Pumas y Las Águilas lideran sus zonas!",
   "📋 Las inscripciones para la próxima temporada ya están abiertas. Comunicate por Instagram.",
-  "📅 El fixture de Mayo ya está disponible en la sección Fixture.",
+  "📅 El fixture del Apertura ya está disponible en la sección Calendario.",
   "⚠️ Recordatorio: los partidos empiezan puntualmente. Se recomienda llegar 20 min antes.",
   "🎉 Bienvenidos a la temporada 2026 de la Liga UNLu Voley. ¡Mucha suerte a todos los equipos!",
 ];
@@ -92,7 +92,7 @@ function renderTable(containerId, equipos) {
 
     // Si hay zonas definidas (no es la "GENERAL"), le ponemos un título
     if (nombreZona !== "GENERAL") {
-      htmlFinal += `<h3 style="color: var(--green); margin: 1.5rem 0 0.5rem; font-family: var(--font-display); font-size: 1.3rem; letter-spacing: 0.05em;">• ${nombreZona}</h3>`;
+      htmlFinal += `<h3 style="color: var(--green); margin: 1.5rem 0 0.5rem; font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.05em; text-transform: uppercase;">• ${nombreZona}</h3>`;
     }
 
     let tableHtml = `
@@ -201,6 +201,11 @@ function initTabs() {
 
 /* ── FIXTURE ────────────────────────────── */
 function renderFixture() {
+  // Función desactivada 
+  // Ahora el calendario se renderiza de forma estática directamente en el HTML
+  // para mantener la nueva identidad asimétrica.
+  
+  /*
   const card = document.getElementById('fixtureCard');
   if (!card) return;
 
@@ -214,6 +219,7 @@ function renderFixture() {
       <span class="btn-icon">📄</span> Ver Fixture del Mes
     </a>
   `;
+  */
 }
 
 
