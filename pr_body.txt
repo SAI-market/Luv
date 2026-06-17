@@ -1,0 +1,18 @@
+﻿## Qué cambia
+Aplica la nueva identidad visual **LUV.** al sitio de la Liga UNLu Voley.
+
+- **Tipografía:** migra de Barlow Condensed/Inter a **Teko + Montserrat**.
+- **Paleta:** verde lima (#bdf25e) y violeta vibrante (#8531e5) sobre fondo oscuro.
+- **Marca:** logo del header y footer pasan a `LUV.`.
+- **Fixture → Calendario:** reemplaza la tarjeta de fixture PDF por un calendario estático asimétrico (Apertura 2026, fechas 1–4).
+- **Detalles:** títulos de zona en mayúsculas/más grandes, textos de noticias y galerías actualizados a la temporada 2026.
+
+## Por qué
+Unificar el look del sitio bajo la identidad "LUV." y dejar el calendario directamente en el HTML en vez de depender de un PDF externo.
+
+## Notas para revisión
+- `renderFixture()` quedó comentada en `app.js` (código muerto); el calendario ahora es estático en el HTML.
+- No incluye `CLAUDE.md` (reglas de trabajo, no relacionado con el rebrand).
+- Pendiente aparte: la API key de Google Sheets está expuesta en `auth.js` y conviene restringirla por referrer + Sheets API.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
