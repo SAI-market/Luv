@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "luv",
+      "autoPort": true,
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-c",
+        "import os, functools, http.server; handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=os.getcwd()); server = http.server.ThreadingHTTPServer(('', int(os.environ.get('PORT', '5173'))), handler); server.serve_forever()"
+      ],
+      "port": 5173
+    }
+  ]
+}

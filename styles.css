@@ -9,38 +9,92 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* ── NUEVA IDENTIDAD LUV. ── */
+  /* ── MARCA — no cambia entre temas ── */
   --green:       #bdf25e;  /* Verde Lima */
   --green-dark:  #8cb846;
   --green-glow:  #bdf25e;
   --green-light: #d6f796;
-  
+
   --blue:        #8531e5;  /* Violeta Vibrante */
   --blue-mid:    #6b26b8;
   --blue-light:  #9f56f5;
-  
+
   --yellow:      #bdf25e;  /* Unificamos el amarillo al verde lima para mantener la paleta */
   --yellow-dark: #8cb846;
   --white:       #ffffff;
-  
-  /* Fondos oscuros con tono azulado/violeta */
-  --bg-dark:     #080718;
-  --card-bg:     rgba(10, 9, 29, 0.75);
-  --card-border: rgba(189, 242, 94, 0.2); /* Borde lima sutil */
-  
-  --text-main:   #f1f5f9;
-  --text-muted:  #a0a0a0;
-  
-  --gold-row:    rgba(189, 242, 94, 0.12);
-  --last-row:    rgba(133, 49, 229, 0.15); /* Violeta para el fondo de descenso/últimos */
-  
+
+  /* Tinta oscura sobre los rellenos lima (botones, badges, tabs activas).
+     Es fija: el lima siempre necesita texto oscuro encima, en los dos temas. */
+  --on-accent:   #080718;
+
   --radius:      12px;
   --radius-sm:   8px;
   --transition:  0.25s ease;
-  
+
   /* Nuevas tipografías */
   --font-display: 'Teko', sans-serif;
   --font-body:    'Montserrat', sans-serif;
+}
+
+/* ── TEMA OSCURO (por defecto) ─────────── */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-dark:     #080718;
+  --bg-header:   rgba(8, 7, 24, 0.88);
+  --bg-nav:      rgba(8, 7, 24, 0.97);
+  --bg-footer:   rgba(8, 7, 24, 0.95);
+  --card-bg:     rgba(10, 9, 29, 0.75);
+  --card-border: rgba(189, 242, 94, 0.2); /* Borde lima sutil */
+
+  --text-strong: #ffffff;  /* títulos */
+  --text-main:   #f1f5f9;
+  --text-muted:  #a0a0a0;
+  --accent-text: var(--green); /* acento legible sobre fondo oscuro */
+  --violet-text: var(--blue-light);
+
+  /* Velos claros sobre el fondo oscuro */
+  --overlay-weak:   rgba(255, 255, 255, 0.05);
+  --overlay-mid:    rgba(255, 255, 255, 0.15);
+  --overlay-strong: rgba(255, 255, 255, 0.3);
+  --row-border:     rgba(255, 255, 255, 0.04);
+  --badge-n-bg:     rgba(255, 255, 255, 0.06);
+
+  --gold-row:    rgba(189, 242, 94, 0.12);
+  --last-row:    rgba(133, 49, 229, 0.15); /* Violeta para el fondo de descenso/últimos */
+  --glow-alpha:  0.25;
+}
+
+/* ── TEMA CLARO ────────────────────────── */
+/* El lima no tiene contraste sobre fondo claro, así que en este tema el
+   acento de texto pasa a ser el violeta. El lima queda para los rellenos. */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-dark:     #f6f5fa;
+  --bg-header:   rgba(246, 245, 250, 0.9);
+  --bg-nav:      rgba(246, 245, 250, 0.97);
+  --bg-footer:   rgba(238, 236, 246, 0.95);
+  --card-bg:     rgba(255, 255, 255, 0.85);
+  --card-border: rgba(133, 49, 229, 0.18);
+
+  --text-strong: #14121f;
+  --text-main:   #24212f;
+  --text-muted:  #5d5872;
+  --accent-text: var(--blue-mid);
+  --violet-text: var(--blue-mid);
+
+  /* Velos oscuros sobre el fondo claro */
+  --overlay-weak:   rgba(20, 18, 31, 0.05);
+  --overlay-mid:    rgba(20, 18, 31, 0.15);
+  --overlay-strong: rgba(20, 18, 31, 0.3);
+  --row-border:     rgba(20, 18, 31, 0.08);
+  --badge-n-bg:     rgba(20, 18, 31, 0.07);
+
+  --gold-row:    rgba(189, 242, 94, 0.35);
+  --last-row:    rgba(133, 49, 229, 0.08);
+  --glow-alpha:  0.18;
 }
 
 html { scroll-behavior: smooth; }
@@ -55,7 +109,7 @@ body {
 
 /* ── SCROLLBAR ──────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #080718; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
 ::-webkit-scrollbar-thumb { background: var(--blue-mid); border-radius: 3px; }
 
 /* ── HEADER ─────────────────────────────── */
@@ -63,7 +117,7 @@ body {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: rgba(8, 7, 24, 0.88);
+  background: var(--bg-header);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--card-border);
@@ -94,18 +148,50 @@ body {
 
 .logo-icon { font-size: 1.5rem; }
 
-.logo-text {
-  font-family: var(--font-display);
-  font-size: 2.2rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--white);
-  text-transform: uppercase;
-  line-height: 1;
-  margin-top: 5px;
+/* Logo: se muestra la versión clara o la oscura según el tema activo */
+.logo-img {
+  height: 46px;
+  width: auto;
+  display: block;
 }
 
-.logo-text strong { color: var(--green); }
+.logo-img--oscuro { display: none; }
+
+:root[data-theme="light"] .logo-img--claro  { display: none; }
+:root[data-theme="light"] .logo-img--oscuro { display: block; }
+
+/* ── BOTÓN DE TEMA ──────────────────────── */
+.theme-toggle {
+  background: var(--overlay-weak);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.theme-toggle:hover {
+  background: var(--overlay-mid);
+  border-color: var(--accent-text);
+  transform: rotate(-15deg);
+}
+
+.theme-toggle__icon--sol  { display: none; }
+:root[data-theme="light"] .theme-toggle__icon--luna { display: none; }
+:root[data-theme="light"] .theme-toggle__icon--sol  { display: inline; }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
 /* NAV */
 nav {
@@ -128,7 +214,7 @@ nav {
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--green);
+  color: var(--accent-text);
   background: rgba(189, 242, 94, 0.08);
 }
 
@@ -178,7 +264,7 @@ nav {
   position: absolute;
   border-radius: 50%;
   filter: blur(120px);
-  opacity: 0.25;
+  opacity: var(--glow-alpha);
 }
 
 .hero-glow--green {
@@ -230,7 +316,7 @@ nav {
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--blue-light);
+  color: var(--violet-text);
   background: rgba(133, 49, 229, 0.15);
   border: 1px solid rgba(133, 49, 229, 0.4);
   padding: 0.35rem 1rem;
@@ -249,7 +335,7 @@ nav {
   display: block;
   font-size: clamp(3.5rem, 12vw, 8rem);
   font-weight: 700;
-  color: var(--white);
+  color: var(--text-strong);
   letter-spacing: 2px;
 }
 
@@ -263,6 +349,14 @@ nav {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(0 0 30px rgba(189, 242, 94, 0.3));
+}
+
+/* El degradé lima no se lee sobre fondo claro: en tema claro va el violeta */
+:root[data-theme="light"] .hero-title--bottom {
+  background: linear-gradient(135deg, var(--blue-mid) 20%, var(--blue-light) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 4px 16px rgba(133, 49, 229, 0.25));
 }
 
 .hero-subtitle {
@@ -355,7 +449,7 @@ nav {
 
 .btn--primary {
   background: var(--green);
-  color: var(--bg-dark);
+  color: var(--on-accent);
   border-color: var(--green);
   box-shadow: 0 0 24px rgba(189, 242, 94, 0.2);
 }
@@ -368,8 +462,8 @@ nav {
 
 .btn--secondary {
   background: transparent;
-  color: var(--green);
-  border-color: var(--green);
+  color: var(--accent-text);
+  border-color: var(--accent-text);
 }
 .btn--secondary:hover {
   background: rgba(189, 242, 94, 0.1);
@@ -378,13 +472,13 @@ nav {
 }
 
 .btn--ghost {
-  background: rgba(255,255,255,0.05);
+  background: var(--overlay-weak);
   color: var(--text-main);
-  border-color: rgba(255,255,255,0.15);
+  border-color: var(--overlay-mid);
 }
 .btn--ghost:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.3);
+  background: var(--overlay-mid);
+  border-color: var(--overlay-strong);
   transform: translateY(-2px);
 }
 
@@ -429,7 +523,7 @@ nav {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--white);
+  color: var(--text-strong);
   position: relative;
   display: inline-block;
   line-height: 1;
@@ -476,14 +570,14 @@ nav {
 }
 
 .tab:hover {
-  color: var(--green);
-  border-color: var(--green);
+  color: var(--accent-text);
+  border-color: var(--accent-text);
   background: rgba(189, 242, 94, 0.06);
 }
 
 .tab.active {
   background: var(--green);
-  color: var(--bg-dark);
+  color: var(--on-accent);
   border-color: var(--green);
   box-shadow: 0 0 16px rgba(189, 242, 94, 0.35);
 }
@@ -519,7 +613,7 @@ nav {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--accent-text);
   padding: 0.9rem 0.75rem;
   text-align: center;
   white-space: nowrap;
@@ -530,7 +624,7 @@ nav {
 .standings-table td {
   padding: 0.85rem 0.75rem;
   text-align: center;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid var(--row-border);
   transition: background var(--transition);
   font-weight: 500;
 }
@@ -548,7 +642,7 @@ nav {
   background: var(--gold-row);
 }
 .standings-table tbody tr.row-first td:nth-child(2) {
-  color: var(--green);
+  color: var(--accent-text);
 }
 
 .standings-table tbody tr.row-last td {
@@ -568,16 +662,16 @@ nav {
   padding-top: 3px;
 }
 
-.pos-badge--1 { background: var(--green); color: var(--bg-dark); }
+.pos-badge--1 { background: var(--green); color: var(--on-accent); }
 .pos-badge--2 { background: rgba(192,192,192,0.2); color: #c0c0c0; border: 1px solid #c0c0c0; }
 .pos-badge--3 { background: rgba(205,127,50,0.2); color: #cd7f32; border: 1px solid #cd7f32; }
-.pos-badge--n { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+.pos-badge--n { background: var(--badge-n-bg); color: var(--text-muted); }
 
 .pts-highlight {
   font-family: var(--font-display);
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--green-light);
+  color: var(--accent-text);
 }
 
 /* ── FIXTURE (ANTIGUO - SI SE NECESITA) ─── */
@@ -604,7 +698,7 @@ nav {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--white);
+  color: var(--text-strong);
   margin-bottom: 0.5rem;
 }
 
@@ -646,7 +740,7 @@ nav {
   font-size: 1.3rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--white);
+  color: var(--text-strong);
 }
 
 .gallery-card__link {
@@ -658,7 +752,7 @@ nav {
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--accent-text);
   text-decoration: none;
   background: rgba(189, 242, 94, 0.1);
   border: 1px solid rgba(189, 242, 94, 0.3);
@@ -670,7 +764,7 @@ nav {
 
 .gallery-card__link:hover {
   background: var(--green);
-  color: var(--bg-dark);
+  color: var(--on-accent);
 }
 
 /* ── NEWS ───────────────────────────────── */
@@ -702,7 +796,7 @@ nav {
   font-family: var(--font-display);
   font-size: 2rem;
   font-weight: 700;
-  color: var(--blue-light);
+  color: var(--violet-text);
   line-height: 1;
   opacity: 0.8;
   min-width: 2rem;
@@ -718,7 +812,7 @@ nav {
 .footer {
   padding: 2rem 1.25rem;
   border-top: 1px solid var(--card-border);
-  background: rgba(8, 7, 24, 0.95);
+  background: var(--bg-footer);
 }
 
 .footer-inner {
@@ -732,13 +826,19 @@ nav {
 }
 
 .footer-logo {
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--white);
+  display: flex;
+  align-items: center;
 }
+
+.footer-logo img {
+  height: 72px;
+  width: auto;
+  display: block;
+}
+
+.footer-logo .logo-img--oscuro { display: none; }
+:root[data-theme="light"] .footer-logo .logo-img--claro  { display: none; }
+:root[data-theme="light"] .footer-logo .logo-img--oscuro { display: block; }
 
 .footer-ig {
   display: inline-flex;
@@ -750,7 +850,7 @@ nav {
   transition: color var(--transition);
 }
 
-.footer-ig:hover { color: var(--green); }
+.footer-ig:hover { color: var(--accent-text); }
 
 .footer-copy {
   width: 100%;
@@ -768,7 +868,7 @@ nav {
   nav {
     position: fixed;
     top: 64px; left: 0; right: 0;
-    background: rgba(8, 7, 24, 0.97);
+    background: var(--bg-nav);
     backdrop-filter: blur(16px);
     flex-direction: column;
     gap: 0;
@@ -827,6 +927,27 @@ nav {
 .reveal-delay-2 { transition-delay: 0.2s; }
 .reveal-delay-3 { transition-delay: 0.3s; }
 
+/* Título de zona dentro de cada categoría */
+.zona-titulo {
+  color: var(--accent-text);
+  margin: 1.5rem 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Diferencia de sets */
+.diff-pos { color: var(--accent-text); }
+.diff-neg { color: #e0484d; }
+:root[data-theme="light"] .diff-neg { color: #c31c21; }
+
+/* Galería sin link cargado todavía */
+.gallery-card__link--vacio {
+  opacity: 0.55;
+  cursor: default;
+}
+
 /* ── ESTILOS AGREGADOS PARA LA TABLA DE SHEETS ── */
 .puntero-row {
     background: rgba(189, 242, 94, 0.15) !important;
@@ -835,12 +956,12 @@ nav {
 
 .pts-cell {
     font-weight: bold;
-    color: var(--green);
+    color: var(--accent-text);
 }
 
 .btn-neon {
     background: transparent;
-    border: 1px solid var(--green);
+    border: 1px solid var(--accent-text);
     color: var(--text-main);
     padding: 0.4rem 1rem;
     font-family: var(--font-display);
@@ -852,7 +973,7 @@ nav {
 
 .btn-neon:hover {
     background: var(--green);
-    color: var(--bg-dark);
+    color: var(--on-accent);
     box-shadow: 0 0 10px var(--green-glow);
 }
 
@@ -870,7 +991,7 @@ nav {
 
 .titulo-calendario {
   background-color: var(--green);
-  color: var(--bg-dark);
+  color: var(--on-accent);
   font-family: var(--font-display);
   font-size: 4.5rem;
   padding: 0 15px;
@@ -897,7 +1018,7 @@ nav {
   font-size: 1.8rem;
   letter-spacing: 2px;
   font-style: italic;
-  color: var(--white);
+  color: var(--text-strong);
   margin-bottom: 1.5rem;
   text-transform: uppercase;
 }
@@ -909,7 +1030,7 @@ nav {
 }
 
 .fecha-card {
-  border: 1px solid var(--green);
+  border: 1px solid var(--accent-text);
   padding: 1.5rem 1rem;
   text-align: center;
   background-color: transparent;
@@ -926,7 +1047,7 @@ nav {
 }
 
 .fecha-numero {
-  color: var(--blue-light);
+  color: var(--violet-text);
   font-family: var(--font-display);
   font-size: 1.4rem;
   line-height: 1;
@@ -935,7 +1056,7 @@ nav {
 }
 
 .fecha-dia {
-  color: var(--white);
+  color: var(--text-strong);
   font-family: var(--font-display);
   font-size: 2rem;
   line-height: 1;

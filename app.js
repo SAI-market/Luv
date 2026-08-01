@@ -19,12 +19,16 @@ const fixturePDF  = "pdfs/fixture-abril.pdf";
 const fixtureNombre = "Fixture — Abril 2026";
 
 /* ── FOTOS ────────────────────────────────
-   Add a new object per date played.
+   ⬇️⬇️  LINKS DE DRIVE — CAMBIAR ACÁ  ⬇️⬇️
+   Las fotos viven en Google Drive, el sitio solo redirige.
+   Pegá en "link" la URL de la carpeta de Drive de cada fecha
+   (Compartir → Cualquiera con el enlace → Lector → Copiar vínculo).
+   Para una fecha nueva, copiá una línea y cambiá fecha y link.
 ------------------------------------------------ */
 const galerias = [
-  { fecha: "Fecha 1 — 18/03/2026", link: "#" },
-  { fecha: "Fecha 2 — 16/05/2026", link: "#" },
-  { fecha: "Fecha 3 — 20/06/2026", link: "#" },
+  { fecha: "Fecha 1 — 18/03/2026", link: "#" },  // ← pegar link de Drive
+  { fecha: "Fecha 2 — 16/05/2026", link: "#" },  // ← pegar link de Drive
+  { fecha: "Fecha 3 — 20/06/2026", link: "#" },  // ← pegar link de Drive
 ];
 
 /* ── NOTICIAS ─────────────────────────────
@@ -92,7 +96,7 @@ function renderTable(containerId, equipos) {
 
     // Si hay zonas definidas (no es la "GENERAL"), le ponemos un título
     if (nombreZona !== "GENERAL") {
-      htmlFinal += `<h3 style="color: var(--green); margin: 1.5rem 0 0.5rem; font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.05em; text-transform: uppercase;">• ${nombreZona}</h3>`;
+      htmlFinal += `<h3 class="zona-titulo">• ${nombreZona}</h3>`;
     }
 
     let tableHtml = `
@@ -134,7 +138,7 @@ function renderTable(containerId, equipos) {
           <td>${eq.pp}</td>
           <td>${eq.sf}</td>
           <td>${eq.sc}</td>
-          <td style="color:${diff >= 0 ? 'var(--green-light)' : '#f87171'}">${diffStr}</td>
+          <td class="${diff >= 0 ? 'diff-pos' : 'diff-neg'}">${diffStr}</td>
           <td><span class="pts-highlight">${eq.puntos}</span></td>
         </tr>
       `;
@@ -232,14 +236,19 @@ function renderGallery() {
     return;
   }
 
-  grid.innerHTML = galerias.map((g, i) => `
-    <div class="gallery-card reveal reveal-delay-${(i % 3) + 1}">
-      <span class="gallery-card__label">📸 ${g.fecha}</span>
-      <a href="${g.link}" target="_blank" rel="noopener noreferrer" class="gallery-card__link">
-        Ver fotos ↗
-      </a>
-    </div>
-  `).join('');
+  grid.innerHTML = galerias.map((g, i) => {
+    const sinLink = !g.link || g.link === '#';
+    const accion = sinLink
+      ? `<span class="gallery-card__link gallery-card__link--vacio">Próximamente</span>`
+      : `<a href="${g.link}" target="_blank" rel="noopener noreferrer" class="gallery-card__link">Ver fotos ↗</a>`;
+
+    return `
+      <div class="gallery-card reveal reveal-delay-${(i % 3) + 1}">
+        <span class="gallery-card__label">📸 ${g.fecha}</span>
+        ${accion}
+      </div>
+    `;
+  }).join('');
 }
 
 
@@ -324,6 +333,26 @@ function initLogoClick() {
   });
 }
 
+/* ── TEMA CLARO / OSCURO ────────────────── */
+function initTheme() {
+  const btn = document.getElementById('themeToggle');
+  const meta = document.getElementById('themeColor');
+
+  // El tema inicial ya lo aplicó el script inline del <head>.
+  const aplicar = (tema) => {
+    document.documentElement.setAttribute('data-theme', tema);
+    if (meta) meta.content = tema === 'light' ? '#f6f5fa' : '#080718';
+    try { localStorage.setItem('luv-tema', tema); } catch (e) {}
+  };
+
+  btn?.addEventListener('click', () => {
+    const actual = document.documentElement.getAttribute('data-theme');
+    aplicar(actual === 'light' ? 'dark' : 'light');
+  });
+
+  aplicar(document.documentElement.getAttribute('data-theme') || 'dark');
+}
+
 /* ── INIT ───────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   renderHeroStats();
@@ -337,6 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initActiveNav();
   initScrollReveal();
   initLogoClick();
+  initTheme();
 
   // Re-run scroll reveal after dynamic content renders
   requestAnimationFrame(() => initScrollReveal());
