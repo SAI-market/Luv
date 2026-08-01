@@ -117,20 +117,41 @@ async function borrarEquipo(id) {
   }
 }
 
+const CATEGORIAS_ORDEN = ['masculino', 'femenino', 'maxi'];
+const CATEGORIAS_ETIQUETA = { masculino: 'Masculino', femenino: 'Femenino Libre', maxi: 'Femenino Maxi' };
+
 function renderListaEquipos() {
   const tbody = document.getElementById('listaEquipos');
-  tbody.innerHTML = _equipos.map(eq => `
-    <tr>
-      <td>${eq.nombre}</td>
-      <td>${eq.categoria}</td>
-      <td>${eq.zona || '-'}</td>
-      <td>${eq.activo !== false ? 'Sí' : 'No'}</td>
-      <td class="admin-actions">
-        <button class="btn btn--ghost btn--sm" type="button" onclick="editarEquipo('${eq.id}')">Editar</button>
-        <button class="btn btn--danger btn--sm" type="button" onclick="borrarEquipo('${eq.id}')">Borrar</button>
-      </td>
-    </tr>
-  `).join('');
+
+  if (_equipos.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Sin equipos cargados.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = CATEGORIAS_ORDEN.map(cat => {
+    const equiposCat = _equipos.filter(eq => eq.categoria === cat);
+    if (equiposCat.length === 0) return '';
+
+    const filaTitulo = `
+      <tr class="admin-table-group">
+        <td colspan="4">${CATEGORIAS_ETIQUETA[cat]}</td>
+      </tr>
+    `;
+
+    const filas = equiposCat.map(eq => `
+      <tr>
+        <td>${eq.nombre}</td>
+        <td>${eq.zona || '-'}</td>
+        <td>${eq.activo !== false ? 'Sí' : 'No'}</td>
+        <td class="admin-actions">
+          <button class="btn btn--ghost btn--sm" type="button" onclick="editarEquipo('${eq.id}')">Editar</button>
+          <button class="btn btn--danger btn--sm" type="button" onclick="borrarEquipo('${eq.id}')">Borrar</button>
+        </td>
+      </tr>
+    `).join('');
+
+    return filaTitulo + filas;
+  }).join('');
 }
 
 function refreshEquipoSelects() {
