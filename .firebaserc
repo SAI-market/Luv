@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "luv-liga-unlu-voley"
-  }
+  },
+  "targets": {
+    "luv-liga-unlu-voley": {
+      "hosting": {
+        "principal": [
+          "ligaunluvoley"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
