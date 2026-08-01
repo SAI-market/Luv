@@ -95,7 +95,7 @@ Plan gratuito (Spark) de sobra: el límite es 50.000 lecturas por día y esta li
 
 ### Hosting
 
-El sitio sigue donde está (GitHub Pages). Firebase acá es solo la base de datos y el login, no hace falta mover el hosting.
+**Actualizado**: el hosting se movió a Firebase Hosting (`https://luv-liga-unlu-voley.web.app`). GitHub queda como control de versiones — los cambios se deployan a mano con `firebase deploy --only hosting`.
 
 ### Plan de migración (sin cortar el servicio)
 

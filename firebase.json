@@ -2,5 +2,22 @@
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "firestore.rules",
+      "firestore.indexes.json",
+      "PLANIFICACION.md",
+      "CLAUDE.md",
+      "README.md",
+      "pr_body.txt",
+      "skills-lock.json",
+      "LIGA Claro.png",
+      "LIGA Obscuro.png"
+    ]
   }
 }
