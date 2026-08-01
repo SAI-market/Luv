@@ -63,7 +63,7 @@
       <div class="hero-grid"></div>
     </div>
     <div class="hero-content">
-      <div class="hero-badge">⚡ Temporada 2026 Apertura</div>
+      <div class="hero-badge">⚡ Temporada 2026 Clausura</div>
       <h1 class="hero-title">
         <span class="hero-title--top">Liga UNLu</span>
         <span class="hero-title--bottom">Voley</span>
@@ -97,43 +97,13 @@
         <div class="tab-panel" id="panel-femenino"></div>
         <div class="tab-panel" id="panel-maxi"></div>
       </div>
+      <p class="ultima-actualizacion" id="ultimaActualizacion" style="text-align:center; color:var(--text-muted); font-size:0.85rem; margin-top:1rem;"></p>
     </div>
   </section>
 
   <section id="fixture" class="section section--alt">
     <div class="container" style="max-width: 600px;">
-      
-      <div class="calendario-header">
-        <h2 class="titulo-calendario">CALENDARIO</h2>
-        <span class="anio-calendario">2026</span>
-      </div>
-
-      <div class="fase-container">
-        <h3 class="fase-titulo">APERTURA:</h3>
-        <div class="fechas-grid">
-          <div class="fecha-card">
-            <span class="fecha-numero">FECHA 1</span>
-            <span class="fecha-dia">18 DE MARZO</span>
-            <div class="icono-pelota" style="position: absolute; top: 8px; right: 8px; font-size: 0.8rem; color: var(--blue-light);">🏐</div>
-          </div>
-          <div class="fecha-card">
-            <span class="fecha-numero">FECHA 2</span>
-            <span class="fecha-dia">16 DE MAYO</span>
-            <div class="icono-pelota" style="position: absolute; top: 8px; right: 8px; font-size: 0.8rem; color: var(--blue-light);">🏐</div>
-          </div>
-          <div class="fecha-card">
-            <span class="fecha-numero">FECHA 3</span>
-            <span class="fecha-dia">20 DE JUNIO</span>
-            <div class="icono-pelota" style="position: absolute; top: 8px; right: 8px; font-size: 0.8rem; color: var(--blue-light);">🏐</div>
-          </div>
-          <div class="fecha-card">
-            <span class="fecha-numero">FECHA 4</span>
-            <span class="fecha-dia">4 DE JULIO</span>
-            <div class="icono-pelota" style="position: absolute; top: 8px; right: 8px; font-size: 0.8rem; color: var(--blue-light);">🏐</div>
-          </div>
-        </div>
-      </div>
-
+      <div id="calendarioContainer"></div>
     </div>
   </section>
 
@@ -164,11 +134,15 @@
         <img src="assets/logo-full-oscuro.png" alt="LUV. — Liga UNLu Voley" class="logo-img--oscuro" />
       </div>
       <p class="footer-copy">© 2026 Liga UNLu Voley — Universidad Nacional de Luján</p>
+      <a id="footerInstagram" class="footer-instagram" href="#" target="_blank" rel="noopener noreferrer" style="display:none; color: var(--accent-text);">📷 Instagram</a>
     </div>
   </footer>
 
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
   <script src="app.js"></script>
-  <script src="auth.js"></script>
-    
+  <script src="datos.js"></script>
+
 </body>
 </html>

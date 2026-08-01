@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Admin — LUV. Liga UNLu Voley</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    (function () {
+      var guardado = null;
+      try { guardado = localStorage.getItem('luv-tema'); } catch (e) {}
+      document.documentElement.setAttribute('data-theme', guardado === 'light' ? 'light' : 'dark');
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;1,400&family=Teko:wght@500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <header class="admin-header">
+    <div class="logo">
+      <img src="assets/logo-claro.png"  alt="LUV." class="logo-img logo-img--claro" />
+      <img src="assets/logo-oscuro.png" alt="LUV." class="logo-img logo-img--oscuro" />
+    </div>
+    <div id="adminUserBox" style="display:none; align-items:center; gap:0.75rem;">
+      <span id="adminEmail" style="color:var(--text-muted); font-size:0.9rem;"></span>
+      <button class="btn btn--ghost btn--sm" id="logoutBtn" type="button">Salir</button>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 2rem 1.25rem;">
+
+    <section id="loginView">
+      <div class="login-card">
+        <h1>Panel Admin</h1>
+        <form id="loginForm" class="admin-form">
+          <label>Email
+            <input type="email" id="loginEmail" required autocomplete="username" />
+          </label>
+          <label>Contraseña
+            <input type="password" id="loginPassword" required autocomplete="current-password" />
+          </label>
+          <p class="status-msg status-msg--error" id="loginError"></p>
+          <button type="submit" class="btn btn--primary">Ingresar</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="panelView" style="display:none;">
+
+      <div class="tabs" id="adminTabs">
+        <button class="tab active" data-tab="equipos" type="button">Equipos</button>
+        <button class="tab" data-tab="partidos" type="button">Partidos</button>
+        <button class="tab" data-tab="fechas" type="button">Fechas</button>
+        <button class="tab" data-tab="noticias" type="button">Noticias</button>
+        <button class="tab" data-tab="galerias" type="button">Galerías</button>
+      </div>
+
+      <!-- EQUIPOS -->
+      <div class="tab-panel active admin-section" id="panel-equipos">
+        <h2 class="section-title" style="font-size:1.8rem;">Equipos</h2>
+        <form id="formEquipo" class="admin-form" style="max-width:420px;">
+          <input type="hidden" id="equipoId" />
+          <label>Nombre
+            <input type="text" id="equipoNombre" required />
+          </label>
+          <label>Categoría
+            <select id="equipoCategoria" required>
+              <option value="masculino">Masculino</option>
+              <option value="femenino">Femenino</option>
+              <option value="maxi">Maxi</option>
+            </select>
+          </label>
+          <label>Zona
+            <input type="text" id="equipoZona" placeholder="Zona A (opcional)" />
+          </label>
+          <label class="admin-checkbox">
+            <input type="checkbox" id="equipoActivo" checked /> Activo
+          </label>
+          <p class="status-msg" id="equipoStatus"></p>
+          <div class="admin-actions">
+            <button type="submit" class="btn btn--primary btn--sm">Guardar</button>
+            <button type="button" class="btn btn--ghost btn--sm" id="cancelEquipo" style="display:none;">Cancelar edición</button>
+          </div>
+        </form>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Nombre</th><th>Categoría</th><th>Zona</th><th>Activo</th><th></th></tr></thead>
+            <tbody id="listaEquipos"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PARTIDOS -->
+      <div class="tab-panel admin-section" id="panel-partidos">
+        <h2 class="section-title" style="font-size:1.8rem;">Cargar partido</h2>
+        <form id="formPartido" class="admin-form" style="max-width:420px;">
+          <input type="hidden" id="partidoId" />
+          <label>Categoría
+            <select id="partidoCategoria" required>
+              <option value="masculino">Masculino</option>
+              <option value="femenino">Femenino</option>
+              <option value="maxi">Maxi</option>
+            </select>
+          </label>
+          <label>Fecha (N°)
+            <input type="number" id="partidoFechaNro" min="1" required />
+          </label>
+          <label>Equipo A
+            <select id="partidoEquipoA" required></select>
+          </label>
+          <label>Sets equipo A
+            <input type="number" id="partidoSetsA" min="0" max="3" required />
+          </label>
+          <label>Equipo B
+            <select id="partidoEquipoB" required></select>
+          </label>
+          <label>Sets equipo B
+            <input type="number" id="partidoSetsB" min="0" max="3" required />
+          </label>
+          <p class="status-msg" id="partidoStatus"></p>
+          <div class="admin-actions">
+            <button type="submit" class="btn btn--primary btn--sm">Guardar partido</button>
+            <button type="button" class="btn btn--ghost btn--sm" id="cancelPartido" style="display:none;">Cancelar edición</button>
+          </div>
+        </form>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Fecha</th><th>Categoría</th><th>Partido</th><th>Sets</th><th></th></tr></thead>
+            <tbody id="listaPartidos"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FECHAS -->
+      <div class="tab-panel admin-section" id="panel-fechas">
+        <h2 class="section-title" style="font-size:1.8rem;">Calendario</h2>
+        <form id="formFecha" class="admin-form" style="max-width:420px;">
+          <input type="hidden" id="fechaId" />
+          <label>N° de fecha
+            <input type="number" id="fechaNro" min="1" required />
+          </label>
+          <label>Día
+            <input type="number" id="fechaDia" min="1" max="31" required />
+          </label>
+          <label>Mes
+            <select id="fechaMes" required>
+              <option value="enero">Enero</option>
+              <option value="febrero">Febrero</option>
+              <option value="marzo">Marzo</option>
+              <option value="abril">Abril</option>
+              <option value="mayo">Mayo</option>
+              <option value="junio">Junio</option>
+              <option value="julio">Julio</option>
+              <option value="agosto">Agosto</option>
+              <option value="septiembre">Septiembre</option>
+              <option value="octubre">Octubre</option>
+              <option value="noviembre">Noviembre</option>
+              <option value="diciembre">Diciembre</option>
+            </select>
+          </label>
+          <label>Fase
+            <select id="fechaFase" required>
+              <option value="apertura">Apertura</option>
+              <option value="clausura" selected>Clausura</option>
+            </select>
+          </label>
+          <label>Estado
+            <select id="fechaEstado" required>
+              <option value="pendiente">Pendiente</option>
+              <option value="proxima">Próxima</option>
+              <option value="jugada">Jugada</option>
+            </select>
+          </label>
+          <p class="status-msg" id="fechaStatus"></p>
+          <div class="admin-actions">
+            <button type="submit" class="btn btn--primary btn--sm">Guardar fecha</button>
+            <button type="button" class="btn btn--ghost btn--sm" id="cancelFecha" style="display:none;">Cancelar edición</button>
+          </div>
+        </form>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>N°</th><th>Día</th><th>Fase</th><th>Estado</th><th></th></tr></thead>
+            <tbody id="listaFechas"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- NOTICIAS -->
+      <div class="tab-panel admin-section" id="panel-noticias">
+        <h2 class="section-title" style="font-size:1.8rem;">Noticias</h2>
+        <form id="formNoticia" class="admin-form" style="max-width:420px;">
+          <input type="hidden" id="noticiaId" />
+          <label>Texto
+            <textarea id="noticiaTexto" required></textarea>
+          </label>
+          <label class="admin-checkbox">
+            <input type="checkbox" id="noticiaVisible" checked /> Visible
+          </label>
+          <p class="status-msg" id="noticiaStatus"></p>
+          <div class="admin-actions">
+            <button type="submit" class="btn btn--primary btn--sm">Publicar</button>
+            <button type="button" class="btn btn--ghost btn--sm" id="cancelNoticia" style="display:none;">Cancelar edición</button>
+          </div>
+        </form>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Texto</th><th>Visible</th><th></th></tr></thead>
+            <tbody id="listaNoticias"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- GALERIAS -->
+      <div class="tab-panel admin-section" id="panel-galerias">
+        <h2 class="section-title" style="font-size:1.8rem;">Galerías</h2>
+        <form id="formGaleria" class="admin-form" style="max-width:420px;">
+          <input type="hidden" id="galeriaId" />
+          <label>Título
+            <input type="text" id="galeriaTitulo" placeholder="Fecha 1 — 18/03/2026" required />
+          </label>
+          <label>Link de Drive
+            <input type="url" id="galeriaLink" placeholder="https://drive.google.com/..." />
+          </label>
+          <label>N° de fecha (opcional)
+            <input type="number" id="galeriaFechaNro" min="1" />
+          </label>
+          <label class="admin-checkbox">
+            <input type="checkbox" id="galeriaVisible" checked /> Visible
+          </label>
+          <p class="status-msg" id="galeriaStatus"></p>
+          <div class="admin-actions">
+            <button type="submit" class="btn btn--primary btn--sm">Guardar</button>
+            <button type="button" class="btn btn--ghost btn--sm" id="cancelGaleria" style="display:none;">Cancelar edición</button>
+          </div>
+        </form>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Título</th><th>Link</th><th>Visible</th><th></th></tr></thead>
+            <tbody id="listaGalerias"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Solo gestionable desde la consola de Firebase, nunca desde el cliente.
+    match /admins/{adminId} {
+      allow read, write: if false;
+    }
+
+    match /equipos/{id} {
+      allow read: if true;
+      allow write: if isAdmin() &&
+        request.resource.data.categoria in ['masculino', 'femenino', 'maxi'] &&
+        request.resource.data.nombre is string &&
+        request.resource.data.activo is bool;
+    }
+
+    match /partidos/{id} {
+      allow read: if true;
+      allow write: if isAdmin() &&
+        request.resource.data.categoria in ['masculino', 'femenino', 'maxi'] &&
+        request.resource.data.setsA is int &&
+        request.resource.data.setsA >= 0 && request.resource.data.setsA <= 3 &&
+        request.resource.data.setsB is int &&
+        request.resource.data.setsB >= 0 && request.resource.data.setsB <= 3 &&
+        request.resource.data.equipoA != request.resource.data.equipoB;
+    }
+
+    match /fechas/{id} {
+      allow read: if true;
+      allow write: if isAdmin() &&
+        request.resource.data.estado in ['jugada', 'proxima', 'pendiente'];
+    }
+
+    match /galerias/{id} {
+      allow read: if true;
+      allow write: if isAdmin() && request.resource.data.visible is bool;
+    }
+
+    match /noticias/{id} {
+      allow read: if true;
+      allow write: if isAdmin() && request.resource.data.visible is bool;
+    }
+
+    match /config/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

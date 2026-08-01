@@ -5,7 +5,7 @@
 ============================================= */
 
 /* =========================================
-   ✏️  DATA SECTION — AHORA SE LLENA DINÁMICAMENTE CON SHEETS
+   ✏️  DATA SECTION — SE LLENA DINÁMICAMENTE DESDE FIRESTORE (ver datos.js)
    ========================================= */
 
 let tablas = {
@@ -14,33 +14,19 @@ let tablas = {
   maxi: [],
 };
 
+let fechas = [];
+let galerias = [];
+let noticias = [];
 
-const fixturePDF  = "pdfs/fixture-abril.pdf";
-const fixtureNombre = "Fixture — Abril 2026";
-
-/* ── FOTOS ────────────────────────────────
-   ⬇️⬇️  LINKS DE DRIVE — CAMBIAR ACÁ  ⬇️⬇️
-   Las fotos viven en Google Drive, el sitio solo redirige.
-   Pegá en "link" la URL de la carpeta de Drive de cada fecha
-   (Compartir → Cualquiera con el enlace → Lector → Copiar vínculo).
-   Para una fecha nueva, copiá una línea y cambiá fecha y link.
------------------------------------------------- */
-const galerias = [
-  { fecha: "Fecha 1 — 18/03/2026", link: "#" },  // ← pegar link de Drive
-  { fecha: "Fecha 2 — 16/05/2026", link: "#" },  // ← pegar link de Drive
-  { fecha: "Fecha 3 — 20/06/2026", link: "#" },  // ← pegar link de Drive
-];
-
-/* ── NOTICIAS ─────────────────────────────
-   Add strings for each news item.
------------------------------------------------- */
-const noticias = [
-  "🏆 Se jugó la Fecha 3 con gran nivel de juego — ¡Los Pumas y Las Águilas lideran sus zonas!",
-  "📋 Las inscripciones para la próxima temporada ya están abiertas. Comunicate por Instagram.",
-  "📅 El fixture del Apertura ya está disponible en la sección Calendario.",
-  "⚠️ Recordatorio: los partidos empiezan puntualmente. Se recomienda llegar 20 min antes.",
-  "🎉 Bienvenidos a la temporada 2026 de la Liga UNLu Voley. ¡Mucha suerte a todos los equipos!",
-];
+/* Refleja si ya llegó la primera respuesta de Firestore para cada colección,
+   para poder distinguir "cargando" de "no hay datos todavía". */
+let cargaEstado = {
+  equipos: false,
+  partidos: false,
+  fechas: false,
+  galerias: false,
+  noticias: false,
+};
 
 /* =========================================
    ⚙️  ENGINE — Don't edit below unless you
@@ -75,7 +61,11 @@ function renderTable(containerId, equipos) {
   if (!container) return;
 
   if (!equipos || equipos.length === 0) {
-    container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Esperando datos...</div>';
+    const listo = cargaEstado.equipos && cargaEstado.partidos;
+    const mensaje = listo
+      ? 'Todavía no hay equipos cargados en esta categoría.'
+      : 'Cargando datos…';
+    container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">${mensaje}</div>`;
     return;
   }
 
@@ -185,6 +175,39 @@ function renderHeroStats() {
   `;
 }
 
+/* ── CONFIG (config/general en Firestore) ── */
+function renderConfig(config) {
+  if (!config) return;
+
+  if (config.temporada) {
+    const badge = document.querySelector('.hero-badge');
+    if (badge) badge.textContent = `⚡ Temporada ${config.temporada}`;
+  }
+
+  if (config.subtituloHero) {
+    const sub = document.querySelector('.hero-subtitle');
+    if (sub) sub.textContent = config.subtituloHero;
+  }
+
+  const ig = document.getElementById('footerInstagram');
+  if (ig) {
+    if (config.instagram) {
+      ig.href = config.instagram;
+      ig.style.display = '';
+    } else {
+      ig.style.display = 'none';
+    }
+  }
+
+  const ult = document.getElementById('ultimaActualizacion');
+  if (ult && config.ultimaActualizacion) {
+    const fecha = typeof config.ultimaActualizacion.toDate === 'function'
+      ? config.ultimaActualizacion.toDate()
+      : new Date(config.ultimaActualizacion);
+    ult.textContent = `Última actualización: ${fecha.toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}`;
+  }
+}
+
 /* ── TABS ───────────────────────────────── */
 function initTabs() {
   const tabs   = document.querySelectorAll('.tab');
@@ -203,27 +226,62 @@ function initTabs() {
   });
 }
 
-/* ── FIXTURE ────────────────────────────── */
-function renderFixture() {
-  // Función desactivada 
-  // Ahora el calendario se renderiza de forma estática directamente en el HTML
-  // para mantener la nueva identidad asimétrica.
-  
-  /*
-  const card = document.getElementById('fixtureCard');
-  if (!card) return;
+/* ── FIXTURE / CALENDARIO ───────────────── */
+const MESES_ABREV = {
+  enero: 'ENERO', febrero: 'FEBRERO', marzo: 'MARZO', abril: 'ABRIL',
+  mayo: 'MAYO', junio: 'JUNIO', julio: 'JULIO', agosto: 'AGOSTO',
+  septiembre: 'SEPTIEMBRE', octubre: 'OCTUBRE', noviembre: 'NOVIEMBRE', diciembre: 'DICIEMBRE',
+};
 
-  card.innerHTML = `
-    <span class="fixture-card__icon">📋</span>
-    <div class="fixture-card__title">${fixtureNombre}</div>
-    <div class="fixture-card__desc">
-      Hacé clic para ver el calendario completo de partidos en PDF.
+function renderFixture() {
+  const container = document.getElementById('calendarioContainer');
+  if (!container) return;
+
+  if (fechas.length === 0) {
+    const mensaje = cargaEstado.fechas
+      ? 'Todavía no hay fechas cargadas.'
+      : 'Cargando calendario…';
+    container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">${mensaje}</div>`;
+    return;
+  }
+
+  const anio = new Date().getFullYear();
+  let html = `
+    <div class="calendario-header">
+      <h2 class="titulo-calendario">CALENDARIO</h2>
+      <span class="anio-calendario">${anio}</span>
     </div>
-    <a href="${fixturePDF}" target="_blank" rel="noopener noreferrer" class="btn btn--pdf">
-      <span class="btn-icon">📄</span> Ver Fixture del Mes
-    </a>
   `;
-  */
+
+  const fases = {};
+  fechas.forEach(f => {
+    const fase = f.fase || 'general';
+    if (!fases[fase]) fases[fase] = [];
+    fases[fase].push(f);
+  });
+
+  Object.keys(fases).forEach(fase => {
+    const lista = fases[fase].sort((a, b) => (a.nro || 0) - (b.nro || 0));
+    html += `
+      <div class="fase-container">
+        <h3 class="fase-titulo">${fase.toUpperCase()}:</h3>
+        <div class="fechas-grid">
+    `;
+    lista.forEach(f => {
+      const jugada = f.estado === 'jugada';
+      const mes = MESES_ABREV[(f.mes || '').toLowerCase()] || (f.mes || '').toUpperCase();
+      html += `
+        <div class="fecha-card${jugada ? ' fecha-card--jugada' : ''}">
+          <span class="fecha-numero">FECHA ${f.nro}</span>
+          <span class="fecha-dia">${f.dia} DE ${mes}</span>
+          <div class="icono-pelota" style="position: absolute; top: 8px; right: 8px; font-size: 0.8rem; color: var(--blue-light);">${jugada ? '✅' : '🏐'}</div>
+        </div>
+      `;
+    });
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
 }
 
 
@@ -232,7 +290,8 @@ function renderGallery() {
   if (!grid) return;
 
   if (galerias.length === 0) {
-    grid.innerHTML = `<p style="color:var(--text-muted);text-align:center;width:100%;">Próximamente...</p>`;
+    const mensaje = cargaEstado.galerias ? 'Próximamente...' : 'Cargando...';
+    grid.innerHTML = `<p style="color:var(--text-muted);text-align:center;width:100%;">${mensaje}</p>`;
     return;
   }
 
@@ -244,7 +303,7 @@ function renderGallery() {
 
     return `
       <div class="gallery-card reveal reveal-delay-${(i % 3) + 1}">
-        <span class="gallery-card__label">📸 ${g.fecha}</span>
+        <span class="gallery-card__label">📸 ${g.titulo}</span>
         ${accion}
       </div>
     `;
@@ -256,10 +315,16 @@ function renderNews() {
   const grid = document.getElementById('newsGrid');
   if (!grid) return;
 
+  if (noticias.length === 0) {
+    const mensaje = cargaEstado.noticias ? 'No hay noticias todavía.' : 'Cargando...';
+    grid.innerHTML = `<p style="color:var(--text-muted);text-align:center;width:100%;">${mensaje}</p>`;
+    return;
+  }
+
   grid.innerHTML = noticias.map((n, i) => `
     <div class="news-card reveal reveal-delay-${(i % 3) + 1}">
       <div class="news-card__num">${String(i + 1).padStart(2, '0')}</div>
-      <div class="news-card__text">${n}</div>
+      <div class="news-card__text">${n.texto}</div>
     </div>
   `).join('');
 }
