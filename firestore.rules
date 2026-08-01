@@ -15,37 +15,42 @@ service cloud.firestore {
 
     match /equipos/{id} {
       allow read: if true;
-      allow write: if isAdmin() &&
+      allow create, update: if isAdmin() &&
         request.resource.data.categoria in ['masculino', 'femenino', 'maxi'] &&
         request.resource.data.nombre is string &&
         request.resource.data.activo is bool;
+      allow delete: if isAdmin();
     }
 
     match /partidos/{id} {
       allow read: if true;
-      allow write: if isAdmin() &&
+      allow create, update: if isAdmin() &&
         request.resource.data.categoria in ['masculino', 'femenino', 'maxi'] &&
         request.resource.data.setsA is int &&
         request.resource.data.setsA >= 0 && request.resource.data.setsA <= 3 &&
         request.resource.data.setsB is int &&
         request.resource.data.setsB >= 0 && request.resource.data.setsB <= 3 &&
         request.resource.data.equipoA != request.resource.data.equipoB;
+      allow delete: if isAdmin();
     }
 
     match /fechas/{id} {
       allow read: if true;
-      allow write: if isAdmin() &&
+      allow create, update: if isAdmin() &&
         request.resource.data.estado in ['jugada', 'proxima', 'pendiente'];
+      allow delete: if isAdmin();
     }
 
     match /galerias/{id} {
       allow read: if true;
-      allow write: if isAdmin() && request.resource.data.visible is bool;
+      allow create, update: if isAdmin() && request.resource.data.visible is bool;
+      allow delete: if isAdmin();
     }
 
     match /noticias/{id} {
       allow read: if true;
-      allow write: if isAdmin() && request.resource.data.visible is bool;
+      allow create, update: if isAdmin() && request.resource.data.visible is bool;
+      allow delete: if isAdmin();
     }
 
     match /config/{id} {
