@@ -308,6 +308,8 @@ function renderGallery() {
       </div>
     `;
   }).join('');
+
+  initScrollReveal();
 }
 
 
@@ -327,6 +329,8 @@ function renderNews() {
       <div class="news-card__text">${n.texto}</div>
     </div>
   `).join('');
+
+  initScrollReveal();
 }
 
 

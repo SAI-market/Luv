@@ -5,7 +5,6 @@
 ============================================= */
 
 const db = firebase.firestore();
-try { db.enablePersistence().catch(() => {}); } catch (e) {}
 
 let _equiposPorId = {};
 let _partidosCache = [];

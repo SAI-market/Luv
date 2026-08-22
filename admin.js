@@ -203,8 +203,8 @@ function initPartidosModule() {
       statusEl.className = 'status-msg status-msg--error';
       return;
     }
-    if ([setsA, setsB].some(s => isNaN(s) || s < 0 || s > 3)) {
-      statusEl.textContent = 'Los sets van de 0 a 3.';
+    if ([setsA, setsB].some(s => isNaN(s) || s < 0 || s > 2)) {
+      statusEl.textContent = 'Los sets van de 0 a 2.';
       statusEl.className = 'status-msg status-msg--error';
       return;
     }
