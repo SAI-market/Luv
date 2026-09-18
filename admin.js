@@ -288,20 +288,56 @@ function nombreEquipo(id) {
 }
 
 function renderListaPartidos() {
-  const tbody = document.getElementById('listaPartidos');
-  if (!tbody) return;
-  tbody.innerHTML = _partidos.map(p => `
-    <tr>
-      <td>${p.fechaNro}</td>
-      <td>${p.categoria}</td>
-      <td>${nombreEquipo(p.equipoA)} vs ${nombreEquipo(p.equipoB)}</td>
-      <td>${p.setsA} - ${p.setsB}</td>
-      <td class="admin-actions">
-        <button class="btn btn--ghost btn--sm" type="button" onclick="editarPartido('${p.id}')">Editar</button>
-        <button class="btn btn--danger btn--sm" type="button" onclick="borrarPartido('${p.id}')">Borrar</button>
-      </td>
-    </tr>
-  `).join('');
+  const wrap = document.getElementById('listaPartidos');
+  if (!wrap) return;
+
+  if (_partidos.length === 0) {
+    wrap.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Sin partidos cargados.</p>';
+    return;
+  }
+
+  wrap.innerHTML = CATEGORIAS_ORDEN.map(cat => {
+    const partidosCat = _partidos.filter(p => p.categoria === cat);
+    if (partidosCat.length === 0) return '';
+
+    const fechasNros = [...new Set(partidosCat.map(p => p.fechaNro))].sort((a, b) => a - b);
+
+    const filas = fechasNros.map(nro => {
+      const f = _fechas.find(x => x.nro === nro);
+      const etiquetaFecha = f ? `Fecha ${nro} — ${f.dia} de ${f.mes}` : `Fecha ${nro}`;
+
+      const filaTitulo = `
+        <tr class="admin-table-group">
+          <td colspan="3">${etiquetaFecha}</td>
+        </tr>
+      `;
+
+      const filasPartido = partidosCat.filter(p => p.fechaNro === nro).map(p => `
+        <tr>
+          <td>${nombreEquipo(p.equipoA)} vs ${nombreEquipo(p.equipoB)}</td>
+          <td>${p.setsA} - ${p.setsB}</td>
+          <td class="admin-actions">
+            <button class="btn btn--ghost btn--sm" type="button" onclick="editarPartido('${p.id}')">Editar</button>
+            <button class="btn btn--danger btn--sm" type="button" onclick="borrarPartido('${p.id}')">Borrar</button>
+          </td>
+        </tr>
+      `).join('');
+
+      return filaTitulo + filasPartido;
+    }).join('');
+
+    return `
+      <details class="admin-group" open>
+        <summary>${CATEGORIAS_ETIQUETA[cat]} <span class="admin-group-count">(${partidosCat.length})</span></summary>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Partido</th><th>Sets</th><th></th></tr></thead>
+            <tbody>${filas}</tbody>
+          </table>
+        </div>
+      </details>
+    `;
+  }).join('');
 }
 
 /* ── FECHAS ──────────────────────────────── */
@@ -377,20 +413,46 @@ async function borrarFecha(id) {
   }
 }
 
+const FASES_ORDEN = ['apertura', 'clausura'];
+const FASES_ETIQUETA = { apertura: 'Apertura', clausura: 'Clausura' };
+
 function renderListaFechas() {
-  const tbody = document.getElementById('listaFechas');
-  tbody.innerHTML = _fechas.map(f => `
-    <tr>
-      <td>${f.nro}</td>
-      <td>${f.dia} de ${f.mes}</td>
-      <td>${f.fase}</td>
-      <td>${f.estado}</td>
-      <td class="admin-actions">
-        <button class="btn btn--ghost btn--sm" type="button" onclick="editarFecha('${f.id}')">Editar</button>
-        <button class="btn btn--danger btn--sm" type="button" onclick="borrarFecha('${f.id}')">Borrar</button>
-      </td>
-    </tr>
-  `).join('');
+  const wrap = document.getElementById('listaFechas');
+  if (!wrap) return;
+
+  if (_fechas.length === 0) {
+    wrap.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Sin fechas cargadas.</p>';
+    return;
+  }
+
+  wrap.innerHTML = FASES_ORDEN.map(fase => {
+    const fechasFase = _fechas.filter(f => f.fase === fase);
+    if (fechasFase.length === 0) return '';
+
+    const filas = fechasFase.map(f => `
+      <tr>
+        <td>${f.nro}</td>
+        <td>${f.dia} de ${f.mes}</td>
+        <td>${f.estado}</td>
+        <td class="admin-actions">
+          <button class="btn btn--ghost btn--sm" type="button" onclick="editarFecha('${f.id}')">Editar</button>
+          <button class="btn btn--danger btn--sm" type="button" onclick="borrarFecha('${f.id}')">Borrar</button>
+        </td>
+      </tr>
+    `).join('');
+
+    return `
+      <details class="admin-group" open>
+        <summary>${FASES_ETIQUETA[fase]} <span class="admin-group-count">(${fechasFase.length})</span></summary>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>N°</th><th>Día</th><th>Estado</th><th></th></tr></thead>
+            <tbody>${filas}</tbody>
+          </table>
+        </div>
+      </details>
+    `;
+  }).join('');
 }
 
 /* ── NOTICIAS ────────────────────────────── */

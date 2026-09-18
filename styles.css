@@ -1168,6 +1168,29 @@ nav {
   border-bottom: 1px solid var(--accent-text);
 }
 
+.admin-group { margin-bottom: 1.2rem; border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; }
+.admin-group + .admin-group { margin-top: 1rem; }
+.admin-group summary {
+  cursor: pointer;
+  padding: 0.7rem 1rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  background: rgba(255,255,255,0.03);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.admin-group summary::-webkit-details-marker { display: none; }
+.admin-group summary::before { content: '▸'; transition: transform 0.15s ease; font-size: 0.85em; }
+.admin-group[open] summary::before { transform: rotate(90deg); }
+.admin-group summary .admin-group-count { color: var(--text-muted); font-family: var(--font-body); font-size: 0.8rem; text-transform: none; letter-spacing: normal; }
+.admin-group .admin-table { margin: 0; }
+.admin-group .admin-table-wrap { margin-top: 0; }
+
 .admin-actions { display: flex; gap: 0.5rem; }
 
 .btn--sm { padding: 0.35rem 0.9rem; font-size: 0.95rem; min-height: auto; }
