@@ -15,11 +15,15 @@ function _calcularTablas() {
   Object.entries(_equiposPorId).forEach(([id, eq]) => {
     if (!eq.activo || !grupos[eq.categoria]) return;
     grupos[eq.categoria][id] = {
+      id,
+      categoria: eq.categoria,
       equipo: eq.nombre,
       zona: eq.zona || 'GENERAL',
       pj: 0, pg: 0, pp: 0, sf: 0, sc: 0,
     };
   });
+
+  const partidosResueltos = [];
 
   _partidosCache.forEach(p => {
     const grupo = grupos[p.categoria];
@@ -32,14 +36,22 @@ function _calcularTablas() {
     a.sf += p.setsA; a.sc += p.setsB;
     b.sf += p.setsB; b.sc += p.setsA;
     if (p.setsA > p.setsB) { a.pg++; b.pp++; } else { b.pg++; a.pp++; }
+
+    partidosResueltos.push({
+      ...p,
+      nombreA: a.equipo,
+      nombreB: b.equipo,
+    });
   });
 
   tablas.masculino = Object.values(grupos.masculino);
   tablas.femenino  = Object.values(grupos.femenino);
   tablas.maxi      = Object.values(grupos.maxi);
+  partidos         = partidosResueltos;
 
   if (typeof renderAllTables === 'function') renderAllTables();
   if (typeof renderHeroStats === 'function') renderHeroStats();
+  if (typeof renderFixture === 'function') renderFixture();
 }
 
 db.collection('equipos').onSnapshot(snap => {
@@ -90,7 +102,9 @@ db.collection('noticias').where('visible', '==', true).onSnapshot(snap => {
 });
 
 db.collection('galerias').where('visible', '==', true).onSnapshot(snap => {
-  galerias = snap.docs.map(d => d.data());
+  galerias = snap.docs
+    .map(d => d.data())
+    .sort((a, b) => (a.fechaNro || 999) - (b.fechaNro || 999));
   cargaEstado.galerias = true;
   if (typeof renderGallery === 'function') renderGallery();
 }, err => {

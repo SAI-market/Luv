@@ -11,6 +11,26 @@ let _fechas = [];
 let _noticias = [];
 let _galerias = [];
 
+function escapeHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function initAdminTheme() {
+  const btn = document.getElementById('themeToggle');
+  btn?.addEventListener('click', () => {
+    const actual = document.documentElement.getAttribute('data-theme');
+    const nuevo = actual === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', nuevo);
+    try { localStorage.setItem('luv-tema', nuevo); } catch (e) {}
+  });
+}
+initAdminTheme();
+
 function initAdminPanel() {
   if (_adminInitDone) return;
   _adminInitDone = true;
@@ -21,6 +41,7 @@ function initAdminPanel() {
   initFechasModule();
   initNoticiasModule();
   initGaleriasModule();
+  initConfigModule();
 }
 
 function actualizarUltimaActualizacion() {
@@ -34,9 +55,13 @@ function initAdminTabs() {
   const panels = document.querySelectorAll('#panelView .tab-panel');
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
       panels.forEach(p => p.classList.remove('active'));
       tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
       document.getElementById(`panel-${tab.dataset.tab}`)?.classList.add('active');
     });
   });
@@ -124,7 +149,7 @@ function renderListaEquipos() {
   const tbody = document.getElementById('listaEquipos');
 
   if (_equipos.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Sin equipos cargados.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin equipos cargados.</td></tr>';
     return;
   }
 
@@ -140,12 +165,12 @@ function renderListaEquipos() {
 
     const filas = equiposCat.map(eq => `
       <tr>
-        <td>${eq.nombre}</td>
-        <td>${eq.zona || '-'}</td>
+        <td>${escapeHtml(eq.nombre)}</td>
+        <td>${escapeHtml(eq.zona || '-')}</td>
         <td>${eq.activo !== false ? 'Sí' : 'No'}</td>
         <td class="admin-actions">
-          <button class="btn btn--ghost btn--sm" type="button" onclick="editarEquipo('${eq.id}')">Editar</button>
-          <button class="btn btn--danger btn--sm" type="button" onclick="borrarEquipo('${eq.id}')">Borrar</button>
+          <button class="btn btn--ghost btn--sm" type="button" onclick="editarEquipo('${escapeHtml(eq.id)}')">Editar</button>
+          <button class="btn btn--danger btn--sm" type="button" onclick="borrarEquipo('${escapeHtml(eq.id)}')">Borrar</button>
         </td>
       </tr>
     `).join('');
@@ -161,8 +186,8 @@ function refreshEquipoSelects() {
     if (!sel) return;
     const actual = sel.value;
     sel.innerHTML = _equipos
-      .filter(eq => eq.categoria === categoria)
-      .map(eq => `<option value="${eq.id}">${eq.nombre}${eq.zona ? ' — ' + eq.zona : ''}</option>`)
+      .filter(eq => eq.categoria === categoria && (eq.activo !== false || eq.id === actual))
+      .map(eq => `<option value="${escapeHtml(eq.id)}">${escapeHtml(eq.nombre)}${eq.zona ? ' — ' + escapeHtml(eq.zona) : ''}</option>`)
       .join('');
     if (actual) sel.value = actual;
   });
@@ -203,13 +228,10 @@ function initPartidosModule() {
       statusEl.className = 'status-msg status-msg--error';
       return;
     }
-    if ([setsA, setsB].some(s => isNaN(s) || s < 0 || s > 2)) {
-      statusEl.textContent = 'Los sets van de 0 a 2.';
-      statusEl.className = 'status-msg status-msg--error';
-      return;
-    }
-    if (setsA === setsB) {
-      statusEl.textContent = 'No puede haber empate en sets.';
+    const maxSets = Math.max(setsA, setsB);
+    const minSets = Math.min(setsA, setsB);
+    if ([setsA, setsB].some(s => isNaN(s)) || maxSets !== 2 || minSets < 0 || minSets > 1) {
+      statusEl.textContent = 'Resultado inválido: al mejor de 3 sets debe ser 2-0 o 2-1.';
       statusEl.className = 'status-msg status-msg--error';
       return;
     }
@@ -239,7 +261,7 @@ function initPartidosModule() {
       }
       statusEl.textContent = 'Partido guardado.';
       statusEl.className = 'status-msg status-msg--ok';
-      resetFormPartido();
+      resetFormPartido(true);
       actualizarUltimaActualizacion();
     } catch (err) {
       statusEl.textContent = 'Error: ' + err.message;
@@ -247,13 +269,19 @@ function initPartidosModule() {
     }
   });
 
-  cancelBtn.addEventListener('click', resetFormPartido);
+  cancelBtn.addEventListener('click', () => resetFormPartido(false));
 }
 
-function resetFormPartido() {
+function resetFormPartido(conservarContexto = false) {
+  const catActual = document.getElementById('partidoCategoria').value;
+  const fechaActual = document.getElementById('partidoFechaNro').value;
   document.getElementById('formPartido').reset();
   document.getElementById('partidoId').value = '';
   document.getElementById('cancelPartido').style.display = 'none';
+  if (conservarContexto) {
+    document.getElementById('partidoCategoria').value = catActual;
+    document.getElementById('partidoFechaNro').value = fechaActual;
+  }
   refreshEquipoSelects();
 }
 
@@ -314,11 +342,11 @@ function renderListaPartidos() {
 
       const filasPartido = partidosCat.filter(p => p.fechaNro === nro).map(p => `
         <tr>
-          <td>${nombreEquipo(p.equipoA)} vs ${nombreEquipo(p.equipoB)}</td>
-          <td>${p.setsA} - ${p.setsB}</td>
+          <td>${escapeHtml(nombreEquipo(p.equipoA))} vs ${escapeHtml(nombreEquipo(p.equipoB))}</td>
+          <td>${escapeHtml(p.setsA)} - ${escapeHtml(p.setsB)}</td>
           <td class="admin-actions">
-            <button class="btn btn--ghost btn--sm" type="button" onclick="editarPartido('${p.id}')">Editar</button>
-            <button class="btn btn--danger btn--sm" type="button" onclick="borrarPartido('${p.id}')">Borrar</button>
+            <button class="btn btn--ghost btn--sm" type="button" onclick="editarPartido('${escapeHtml(p.id)}')">Editar</button>
+            <button class="btn btn--danger btn--sm" type="button" onclick="borrarPartido('${escapeHtml(p.id)}')">Borrar</button>
           </td>
         </tr>
       `).join('');
@@ -349,6 +377,7 @@ function initFechasModule() {
   db.collection('fechas').orderBy('nro').onSnapshot(snap => {
     _fechas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderListaFechas();
+    renderListaPartidos();
   }, err => {
     statusEl.textContent = 'Error al leer fechas: ' + err.message;
     statusEl.className = 'status-msg status-msg--error';
@@ -431,12 +460,12 @@ function renderListaFechas() {
 
     const filas = fechasFase.map(f => `
       <tr>
-        <td>${f.nro}</td>
-        <td>${f.dia} de ${f.mes}</td>
-        <td>${f.estado}</td>
+        <td>${escapeHtml(f.nro)}</td>
+        <td>${escapeHtml(f.dia)} de ${escapeHtml(f.mes)}</td>
+        <td>${escapeHtml(f.estado)}</td>
         <td class="admin-actions">
-          <button class="btn btn--ghost btn--sm" type="button" onclick="editarFecha('${f.id}')">Editar</button>
-          <button class="btn btn--danger btn--sm" type="button" onclick="borrarFecha('${f.id}')">Borrar</button>
+          <button class="btn btn--ghost btn--sm" type="button" onclick="editarFecha('${escapeHtml(f.id)}')">Editar</button>
+          <button class="btn btn--danger btn--sm" type="button" onclick="borrarFecha('${escapeHtml(f.id)}')">Borrar</button>
         </td>
       </tr>
     `).join('');
@@ -528,11 +557,11 @@ function renderListaNoticias() {
   const tbody = document.getElementById('listaNoticias');
   tbody.innerHTML = _noticias.map(n => `
     <tr>
-      <td style="white-space:normal; max-width:320px;">${n.texto}</td>
+      <td style="white-space:normal; max-width:320px;">${escapeHtml(n.texto)}</td>
       <td>${n.visible !== false ? 'Sí' : 'No'}</td>
       <td class="admin-actions">
-        <button class="btn btn--ghost btn--sm" type="button" onclick="editarNoticia('${n.id}')">Editar</button>
-        <button class="btn btn--danger btn--sm" type="button" onclick="borrarNoticia('${n.id}')">Borrar</button>
+        <button class="btn btn--ghost btn--sm" type="button" onclick="editarNoticia('${escapeHtml(n.id)}')">Editar</button>
+        <button class="btn btn--danger btn--sm" type="button" onclick="borrarNoticia('${escapeHtml(n.id)}')">Borrar</button>
       </td>
     </tr>
   `).join('');
@@ -615,13 +644,53 @@ function renderListaGalerias() {
   const tbody = document.getElementById('listaGalerias');
   tbody.innerHTML = _galerias.map(g => `
     <tr>
-      <td>${g.titulo}</td>
-      <td>${g.link && g.link !== '#' ? `<a href="${g.link}" target="_blank" rel="noopener noreferrer">Ver</a>` : '-'}</td>
+      <td>${escapeHtml(g.titulo)}</td>
+      <td>${g.link && g.link !== '#' ? `<a href="${escapeHtml(g.link)}" target="_blank" rel="noopener noreferrer">Ver</a>` : '-'}</td>
       <td>${g.visible !== false ? 'Sí' : 'No'}</td>
       <td class="admin-actions">
-        <button class="btn btn--ghost btn--sm" type="button" onclick="editarGaleria('${g.id}')">Editar</button>
-        <button class="btn btn--danger btn--sm" type="button" onclick="borrarGaleria('${g.id}')">Borrar</button>
+        <button class="btn btn--ghost btn--sm" type="button" onclick="editarGaleria('${escapeHtml(g.id)}')">Editar</button>
+        <button class="btn btn--danger btn--sm" type="button" onclick="borrarGaleria('${escapeHtml(g.id)}')">Borrar</button>
       </td>
     </tr>
   `).join('');
+}
+
+/* ── CONFIGURACIÓN GENERAL ───────────────── */
+function initConfigModule() {
+  const form = document.getElementById('formConfig');
+  const statusEl = document.getElementById('configStatus');
+  if (!form) return;
+
+  db.collection('config').doc('general').onSnapshot(doc => {
+    if (!doc.exists) return;
+    const d = doc.data();
+    document.getElementById('configTemporada').value = d.temporada || '';
+    document.getElementById('configSubtitulo').value = d.subtituloHero || '';
+    document.getElementById('configInstagram').value = d.instagram || '';
+  }, err => {
+    statusEl.textContent = 'Error al leer configuración: ' + err.message;
+    statusEl.className = 'status-msg status-msg--error';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const temporada = document.getElementById('configTemporada').value.trim();
+    const subtituloHero = document.getElementById('configSubtitulo').value.trim();
+    const instagram = document.getElementById('configInstagram').value.trim();
+    if (!temporada || !subtituloHero) return;
+
+    try {
+      await db.collection('config').doc('general').set({
+        temporada,
+        subtituloHero,
+        instagram,
+        ultimaActualizacion: firebase.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+      statusEl.textContent = 'Configuración guardada.';
+      statusEl.className = 'status-msg status-msg--ok';
+    } catch (err) {
+      statusEl.textContent = 'Error: ' + err.message;
+      statusEl.className = 'status-msg status-msg--error';
+    }
+  });
 }
